@@ -20,13 +20,13 @@ public class UsuarioRol extends CamposObligatorios {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario_rol")
-    private Long idUsuarioRol;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "id_rol")
-    private Integer IdRol;
+    private Integer idRol;
 
     @Column(name = "id_usuario")
-    private Integer IdUsuario;
+    private Integer idUsuario;
 
 }

@@ -1,27 +1,44 @@
 package com.kjvargas.admusers.Controllers;
 
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
-import com.kjvargas.admusers.Services.UsuarioService;
+import com.kjvargas.admusers.Services.Usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/usuarios")
-    public List<Usuario> findAll() {
-        return usuarioService.findAll();
+    @PostMapping
+    public ResponseEntity<Usuario> createUser(@Valid @RequestBody Usuario usuario) {
+        return null;
     }
 
-    @PostMapping("/usuarios")
-    public void insert(@RequestBody Usuario usuario) {
-        usuarioService.insert(usuario);
+    @GetMapping
+    public ResponseEntity<?> findAllUser(@PageableDefault(page = 0, size = 5) Pageable pageable) {
+        return null;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> findByIdUser(@PathVariable Long id) {
+        return null;
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> updateUser(@RequestBody String usuario, @PathVariable Long id) {
+        return null;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        return null;
     }
 }
