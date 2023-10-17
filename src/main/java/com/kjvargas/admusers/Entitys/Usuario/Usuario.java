@@ -56,8 +56,7 @@ public class Usuario extends CamposObligatorios {
     @Column(name = "password")
     private String password;
 
-    @NotNull
-    @NotEmpty
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario"), 
                                     inverseJoinColumns = @JoinColumn(name = "id_rol", referencedColumnName = "id_rol"))

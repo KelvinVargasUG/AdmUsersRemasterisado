@@ -1,6 +1,5 @@
 package com.kjvargas.admusers.Services.Usuario;
 
-import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,26 +96,6 @@ public class UsuarioService {
             usuario.setEmail((String) row[3]);
             usuario.setEstado((String) row[4]);
         }
-
-        StoredProcedureQuery storedProcedureRol = entityManager
-                .createStoredProcedureQuery("kjvargas.find_all_rol_by_id")
-                .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
-        storedProcedureRol.setParameter(1, id);
-        storedProcedureRol.execute();
-
-
-        List<Rol> rolesUsuario = new ArrayList<>();
-        Rol rol = new Rol();
-        List<Object[]> resultListRol = storedProcedureRol.getResultList();
-        for (Object[] row : resultListRol) {
-            rol.setId(((Number) row[0]).longValue());
-            rol.setNombre((String) row[1]);
-            System.out.println(row[1]);
-            rolesUsuario.add(rol);
-        }
-
-        usuario.setRoles(rolesUsuario);
 
         return usuario;
     }

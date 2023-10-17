@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,8 +23,12 @@ public class RolController {
     }
 
     @GetMapping("/no_asignados/user/{id}")
-    public ResponseEntity<List<Rol>> findByUserUnassignedRoles(@PathVariable Long id) {
+    public ResponseEntity<List<Rol>> findByUserUnassignedRoles(@Valid @PathVariable Long id) {
         return ResponseEntity.ok(rolService.findByUserUnassignedRoles(id));
     }
 
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Rol>> findRolByUserId(@Valid @PathVariable Long id) {
+        return ResponseEntity.ok(rolService.findRolByUserId(id));
+    }
 }

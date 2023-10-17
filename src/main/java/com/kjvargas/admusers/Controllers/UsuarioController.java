@@ -23,22 +23,22 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAllUser(@PageableDefault(page = 0, size = 5) Pageable pageable) {
+    public ResponseEntity<?> findAllUser() {
         return ResponseEntity.ok(usuarioService.findAllUser());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> findByIdUser(@PathVariable Long id) {
+    public ResponseEntity<Usuario> findByIdUser(@Valid @PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.findByIdUser(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> updateUser(@RequestBody Usuario usuario, @PathVariable Long id) {
+    public ResponseEntity<Usuario> updateUser(@Valid @RequestBody Usuario usuario, @PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.updateUser(usuario, id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@Valid @PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.deleteUser(id));
     }
 }

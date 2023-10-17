@@ -57,4 +57,25 @@ public class RolService {
 
         return roles;
     }
+
+    public List<Rol> findRolByUserId(Long id){
+        StoredProcedureQuery storedProcedure = entityManager
+                .createStoredProcedureQuery("kjvargas.find_all_rol_by_id")
+                .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
+                .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
+        storedProcedure.setParameter(1, id);
+        storedProcedure.execute();
+
+        List<Rol> rolesUsuario = new ArrayList<>();
+        Rol rol = new Rol();
+        List<Object[]> resultList = storedProcedure.getResultList();
+        for (Object[] row : resultList) {
+            rol.setId(((Number) row[0]).longValue());
+            rol.setNombre((String) row[1]);
+            System.out.println(row[1]);
+            rolesUsuario.add(rol);
+        }
+
+        return rolesUsuario;
+    }
 }
