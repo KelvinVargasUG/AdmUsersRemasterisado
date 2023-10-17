@@ -8,6 +8,8 @@ import javax.validation.constraints.Size;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @MappedSuperclass
 public class CamposObligatorios {
@@ -19,9 +21,9 @@ public class CamposObligatorios {
 
 
     @Column(precision = 8, scale = 0, name = "fecha_creacion", updatable = false)
-    private Long fechaCreacion;
+    private Date fechaCreacion;
 
     @Column(precision = 8, scale = 0 , name = "fecha_modificacion", insertable = false)
-    private Long fechaModificacion;
+    private Date fechaModificacion;
 
 }

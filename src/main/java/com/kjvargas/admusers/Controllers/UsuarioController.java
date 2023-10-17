@@ -19,26 +19,26 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<Usuario> createUser(@Valid @RequestBody Usuario usuario) {
-        return null;
+        return ResponseEntity.ok(usuarioService.createUser(usuario));
     }
 
     @GetMapping
     public ResponseEntity<?> findAllUser(@PageableDefault(page = 0, size = 5) Pageable pageable) {
-        return null;
+        return ResponseEntity.ok(usuarioService.findAllUser());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> findByIdUser(@PathVariable Long id) {
-        return null;
+        return ResponseEntity.ok(usuarioService.findByIdUser(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> updateUser(@RequestBody String usuario, @PathVariable Long id) {
-        return null;
+    public ResponseEntity<Usuario> updateUser(@RequestBody Usuario usuario, @PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.updateUser(usuario, id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        return null;
+        return ResponseEntity.ok(usuarioService.deleteUser(id));
     }
 }

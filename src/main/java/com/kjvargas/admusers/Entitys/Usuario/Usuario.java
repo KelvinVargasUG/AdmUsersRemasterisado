@@ -32,7 +32,7 @@ public class Usuario extends CamposObligatorios {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id_usuario")
     private Long id;
 
     @NotNull(message = "{app.fiel.notNull.error}")

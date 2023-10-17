@@ -1,6 +1,8 @@
 package com.kjvargas.admusers.Controllers;
 
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
+import com.kjvargas.admusers.Services.Usuario.RolService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,14 +13,17 @@ import java.util.List;
 @RequestMapping("/api/roles")
 public class RolController {
 
+    @Autowired
+    private RolService rolService;
+
     @GetMapping
     public ResponseEntity<List<Rol>> findAllRol() {
-        return null;
+        return ResponseEntity.ok(rolService.findAllRoles());
     }
 
-    @GetMapping("/roles/{id}")
-    public ResponseEntity<Rol> findByUserUnassignedRoles(@PathVariable Long id) {
-        return null;
+    @GetMapping("/no_asignados/user/{id}")
+    public ResponseEntity<List<Rol>> findByUserUnassignedRoles(@PathVariable Long id) {
+        return ResponseEntity.ok(rolService.findByUserUnassignedRoles(id));
     }
 
 }
