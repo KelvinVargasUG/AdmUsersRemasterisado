@@ -167,3 +167,14 @@ BEGIN
                 inner join kjvargas.rol r on r.id_rol = tx.id_rol;
 END;
 --------------------------------------------------------------------------------------
+--findByUserAssignedRoles------------------------------------------------------------
+create or replace PROCEDURE kjvargas.find_all_rol_by_id(p_id_user in number, p_rol out SYS_REFCURSOR)
+    IS
+BEGIN
+    OPEN p_rol FOR
+select ur.id_rol, r.NOMBRE
+from kjvargas.usuario_rol ur
+         inner join kjvargas.ROL r on r.id_rol = ur.id_rol
+WHERE ur.estado IS NOT NULL
+  and ur.id_usuario =  p_id_user;
+END;
