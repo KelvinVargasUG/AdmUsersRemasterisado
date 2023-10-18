@@ -1,5 +1,6 @@
 package com.kjvargas.admusers.Services.Usuario;
 
+import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class UsuarioService {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private UsuarioRolService usuarioRolService;
+
     @PostConstruct
     private void createUserAdmin() {
         StoredProcedureQuery storedProcedure = entityManager
@@ -25,9 +29,14 @@ public class UsuarioService {
     }
 
     public Usuario createUser(Usuario usuario) {
-        boolean emailExist = comprobarExistenciaEmail(usuario.getEmail());
-        if (emailExist) {
-            throw new RuntimeException("El email ya existe");
+        Usuario emailExist = usuarioRolService.findByIdEmail(usuario.getEmail());
+        if (emailExist.getEmail().equals(usuario.getEmail())) {
+            if (emailExist.getEstado() == null) {
+                habilitarUsuario(emailExist.getId());
+                throw new RuntimeException("El email ya existe, se habilito el usuario");
+            } else {
+                throw new RuntimeException("El email ya existe");
+            }
         }
         if (usuario.getEstado() == null) {
             StoredProcedureQuery storedProcedure = entityManager
@@ -87,32 +96,8 @@ public class UsuarioService {
         return usuarios;
     }
 
-    public Usuario findByIdUser(Long id) {
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.find_users_by_id")
-                .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
-        storedProcedure.setParameter(1, id);
-        storedProcedure.execute();
-
-        Usuario usuario = new Usuario();
-
-        List<Object[]> resultList = storedProcedure.getResultList();
-        for (Object[] row : resultList) {
-            usuario.setId(((Number) row[0]).longValue());
-            usuario.setNombre((String) row[1]);
-            usuario.setApellido((String) row[2]);
-            usuario.setEmail((String) row[3]);
-            usuario.setEstado((String) row[4]);
-        }
-        if (usuario.getId() == null) {
-            throw new RuntimeException("El usuario no existe");
-        }
-        return usuario;
-    }
-
     public Usuario updateUser(Usuario usuario, Long id) {
-        Usuario comprobarId = findByIdUser(id);
+        Usuario comprobarId = usuarioRolService.findByIdUser(id);
         if (comprobarId.getId() == null) {
             throw new RuntimeException("El usuario no existe");
         }
@@ -150,7 +135,7 @@ public class UsuarioService {
     }
 
     public String deleteUser(Long id) {
-        Usuario comprobarId = findByIdUser(id);
+        Usuario comprobarId = usuarioRolService.findByIdUser(id);
         if (comprobarId.getId() == null) {
             throw new RuntimeException("El usuario no existe");
         }
@@ -164,22 +149,13 @@ public class UsuarioService {
         return "Usuario eliminado";
     }
 
-    public boolean comprobarExistenciaEmail(String email) {
-        if (email == null || email.isEmpty()) {
-            throw new RuntimeException("El email no puede ser nulo o vacio");
-        }
+    public void habilitarUsuario(Long id_user) {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.comprobar_exit_email")
-                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(2, Integer.class, ParameterMode.OUT);
+                .createStoredProcedureQuery("kjvargas.habilitar_usuario")
+                .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
 
-        storedProcedure.setParameter(1, email);
-
+        storedProcedure.setParameter(1, id_user);
         storedProcedure.execute();
-        Integer respuestaProcedure = (Integer) storedProcedure.getOutputParameterValue(2);
-
-        return respuestaProcedure == 1;
     }
 
-    ;
 }

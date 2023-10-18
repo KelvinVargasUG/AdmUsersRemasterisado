@@ -1,4 +1,4 @@
-alter session set "_ORACLE_SCRIPT"=true;
+alter session set "_ORACLE_SCRIPT"= true;
 
 --Crea usuario
 CREATE USER kjvargas IDENTIFIED BY 12345;
@@ -19,115 +19,112 @@ EXCEPTION
     WHEN NO_DATA_FOUND THEN
         insert into kjvargas.rol
             (FECHA_CREACION, FECHA_MODIFICACION, nombre)
-        values
-            (sysdate, sysdate, 'Rol_Admin');
+        values (sysdate, sysdate, 'Rol_Admin');
 
         insert into kjvargas.rol
-        (FECHA_CREACION, FECHA_MODIFICACION, nombre)
-        values
-            (sysdate, sysdate, 'Rol_User');
+            (FECHA_CREACION, FECHA_MODIFICACION, nombre)
+        values (sysdate, sysdate, 'Rol_User');
 
         insert into kjvargas.usuario
-        (FECHA_CREACION, FECHA_MODIFICACION, EMAIL, NOMBRE, apellido, PASSWORD)
-        values
-            (sysdate, sysdate, 'admin@hotmail.com', 'admin','rol','12345');
+            (FECHA_CREACION, FECHA_MODIFICACION, EMAIL, NOMBRE, apellido, PASSWORD)
+        values (sysdate, sysdate, 'admin@hotmail.com', 'admin', 'rol', '12345');
 
         insert into kjvargas.usuario_rol
-        (FECHA_CREACION, FECHA_MODIFICACION,ID_ROL,ID_USUARIO)
-        values
-            (sysdate, sysdate,1,1);
+            (FECHA_CREACION, FECHA_MODIFICACION, ID_ROL, ID_USUARIO)
+        values (sysdate, sysdate, 1, 1);
 end;
---------------------------------------------------------------------------------------------
+
+
 
 --Create usuario User--------------------------------------------------------------------
-create or replace PROCEDURE kjvargas.createUsuario
-(p_nombre   in varchar2,
- p_apellido in varchar2,
- p_email    in varchar2,
- p_password in varchar2,
- p_users out SYS_REFCURSOR)
+create or replace PROCEDURE kjvargas.createUsuario(p_nombre in varchar2,
+                                                   p_apellido in varchar2,
+                                                   p_email in varchar2,
+                                                   p_password in varchar2,
+                                                   p_users out SYS_REFCURSOR)
 as
     id_usuario kjvargas.usuario.ID_USUARIO%type;
 begin
     insert into kjvargas.USUARIO (NOMBRE, APELLIDO, EMAIL, PASSWORD, FECHA_CREACION, FECHA_MODIFICACION)
-    values (p_nombre, p_apellido, p_email, p_password,sysdate,sysdate)
+    values (p_nombre, p_apellido, p_email, p_password, sysdate, sysdate)
     RETURNING ID_USUARIO INTO id_usuario;
 
     insert into kjvargas.usuario_rol
-    (FECHA_CREACION, FECHA_MODIFICACION,ID_ROL,ID_USUARIO)
-    values
-        (sysdate, sysdate,2,id_usuario);
+        (FECHA_CREACION, FECHA_MODIFICACION, ID_ROL, ID_USUARIO)
+    values (sysdate, sysdate, 2, id_usuario);
 
     kjvargas.find_users_by_id(id_usuario, p_users);
 
 end;
 
---------------------------------------------------------------------------------------
+
 
 --Update usuario----------------------------------------------------------------------
-create or replace PROCEDURE kjvargas.updateUsuario
-(p_id_usuario in NUMBER,
- p_nombre in varchar2,
- p_apellido in varchar2,
- p_email in varchar2,
- p_password in varchar2,
- p_estado in varchar2,
- p_users out SYS_REFCURSOR)
-
+create or replace PROCEDURE kjvargas.updateUsuario(p_id_usuario in NUMBER,
+                                                   p_nombre in varchar2,
+                                                   p_apellido in varchar2,
+                                                   p_email in varchar2,
+                                                   p_password in varchar2,
+                                                   p_estado in varchar2,
+                                                   p_users out SYS_REFCURSOR)
 as
 begin
     UPDATE kjvargas.usuario
-    set
-        fecha_modificacion = SYSDATE,
+    set fecha_modificacion = SYSDATE,
         nombre             = p_nombre,
         apellido           = p_apellido,
         email              = p_email,
         password           = p_password,
         estado             = p_estado
-    where id_usuario       = p_id_usuario;
+    where id_usuario = p_id_usuario;
 
     kjvargas.find_users_by_id(p_id_usuario, p_users);
 end;
---------------------------------------------------------------------------------------
+
+
 
 --Delete usuario----------------------------------------------------------------------
-create or replace PROCEDURE kjvargas.deleteUsuario
-(p_id_usuario in NUMBER)
+create or replace PROCEDURE kjvargas.deleteUsuario(p_id_usuario in NUMBER)
 as
 begin
     UPDATE kjvargas.usuario
-    set
-        estado           = null
-    where id_usuario   = p_id_usuario;
+    set estado = null
+    where id_usuario = p_id_usuario;
 end;
---------------------------------------------------------------------------------------
+
+
 
 --find all usuarios--------------------------------------------------------------------
-create or replace PROCEDURE kjvargas.find_all_users (p_users out SYS_REFCURSOR)
+create or replace PROCEDURE kjvargas.find_all_users(p_users out SYS_REFCURSOR)
     IS
 BEGIN
     OPEN p_users FOR
-        SELECT
-            u.id_usuario, u.nombre,
-            u.apellido, u.email,
-            u.estado, rol.nombre AS roles
+        SELECT u.id_usuario,
+               u.nombre,
+               u.apellido,
+               u.email,
+               u.estado,
+               rol.nombre AS roles
         FROM kjvargas.usuario u
                  INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
                  INNER JOIN kjvargas.rol rol ON ur.id_rol = rol.id_rol
         WHERE u.estado IS NOT NULL
         ORDER BY u.id_usuario DESC;
 END;
---------------------------------------------------------------------------------------
+
+
 
 --find usuario by id--------------------------------------------------------------------
-create or replace PROCEDURE kjvargas.find_users_by_id (p_id_user in number, p_users out SYS_REFCURSOR)
+create or replace PROCEDURE kjvargas.find_users_by_id(p_id_user in number, p_users out SYS_REFCURSOR)
     IS
 BEGIN
     OPEN p_users FOR
-        SELECT
-            u.id_usuario, u.nombre,
-            u.apellido, u.email,
-            u.estado, rol.nombre AS roles
+        SELECT u.id_usuario,
+               u.nombre,
+               u.apellido,
+               u.email,
+               u.estado,
+               rol.nombre AS roles
         FROM kjvargas.usuario u
                  INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
                  INNER JOIN kjvargas.rol rol ON ur.id_rol = rol.id_rol
@@ -135,16 +132,33 @@ BEGIN
           and u.id_usuario = p_id_user
         ORDER BY u.id_usuario DESC;
 END;
+
+
+
 ---Comprobar existencia del email-----------------------------------------------------------------------
-create or replace procedure KJVARGAS.COMPROBAR_EXIT_EMAIL (
-    p_email IN VARCHAR2,
-    p_respuesta OUT NUMBER
-) as
+create or replace PROCEDURE kjvargas.find_user_by_email(p_email in varchar2, p_users out SYS_REFCURSOR)
+    IS
+BEGIN
+    OPEN p_users FOR
+        SELECT u.id_usuario,
+               u.nombre,
+               u.apellido,
+               u.email,
+               u.estado,
+               rol.nombre AS roles
+        FROM kjvargas.usuario u
+                 INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
+                 INNER JOIN kjvargas.rol rol ON ur.id_rol = rol.id_rol
+        WHERE u.EMAIL = p_email;
+END;
+
+
+
+--habilitar usuario--------------------------------------------------------------------
+create or replace procedure habilitar_usuario(p_id_user in number)
+as
 begin
-    select 1 into p_respuesta from KJVARGAS.USUARIO u where u.email = p_email;
-exception
-    when no_data_found then
-        p_respuesta := 0;
+    update kjvargas.USUARIO u set u.estado = 'A' where u.id_usuario = p_id_user;
 end;
 
 
@@ -158,7 +172,8 @@ BEGIN
         FROM kjvargas.rol rol
         WHERE rol.estado IS NOT NULL;
 END;
---------------------------------------------------------------------------------------
+
+
 
 --findByUserUnassignedRoles------------------------------------------------------------
 create or replace PROCEDURE kjvargas.roles_no_asignado_user(p_id_user in number, p_rol out SYS_REFCURSOR)
@@ -166,27 +181,27 @@ create or replace PROCEDURE kjvargas.roles_no_asignado_user(p_id_user in number,
 BEGIN
     OPEN p_rol FOR
         select r.id_rol, r.nombre
-        from(
-                SELECT rol.id_rol
-                FROM kjvargas.rol rol
-                WHERE rol.estado IS NOT NULL
-                minus
-                select ur.id_rol
-                from kjvargas.usuario_rol ur
-                WHERE ur.estado IS NOT NULL
-                  and ur.id_usuario = p_id_user
-            ) tx
-                inner join kjvargas.rol r on r.id_rol = tx.id_rol;
+        from (SELECT rol.id_rol
+              FROM kjvargas.rol rol
+              WHERE rol.estado IS NOT NULL
+              minus
+              select ur.id_rol
+              from kjvargas.usuario_rol ur
+              WHERE ur.estado IS NOT NULL
+                and ur.id_usuario = p_id_user) tx
+                 inner join kjvargas.rol r on r.id_rol = tx.id_rol;
 END;
---------------------------------------------------------------------------------------
+
+
+
 --findByUserAssignedRoles------------------------------------------------------------
 create or replace PROCEDURE kjvargas.find_all_rol_by_id(p_id_user in number, p_rol out SYS_REFCURSOR)
     IS
 BEGIN
     OPEN p_rol FOR
-select ur.id_rol, r.NOMBRE
-from kjvargas.usuario_rol ur
-         inner join kjvargas.ROL r on r.id_rol = ur.id_rol
-WHERE ur.estado IS NOT NULL
-  and ur.id_usuario =  p_id_user;
+        select ur.id_rol, r.NOMBRE
+        from kjvargas.usuario_rol ur
+                 inner join kjvargas.ROL r on r.id_rol = ur.id_rol
+        WHERE ur.estado IS NOT NULL
+          and ur.id_usuario = p_id_user;
 END;
