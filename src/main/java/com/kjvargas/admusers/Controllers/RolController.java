@@ -18,17 +18,29 @@ public class RolController {
     private RolService rolService;
 
     @GetMapping
-    public ResponseEntity<List<Rol>> findAllRol() {
-        return ResponseEntity.ok(rolService.findAllRoles());
+    public ResponseEntity<?> findAllRol() {
+        try {
+            return ResponseEntity.ok(rolService.findAllRoles());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/no_asignados/user/{id}")
-    public ResponseEntity<List<Rol>> findByUserUnassignedRoles(@Valid @PathVariable Long id) {
-        return ResponseEntity.ok(rolService.findByUserUnassignedRoles(id));
+    public ResponseEntity<?> findByUserUnassignedRoles(@Valid @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(rolService.findByUserUnassignedRoles(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<Rol>> findRolByUserId(@Valid @PathVariable Long id) {
-        return ResponseEntity.ok(rolService.findRolByUserId(id));
+    public ResponseEntity<?> findRolByUserId(@Valid @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(rolService.findRolByUserId(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

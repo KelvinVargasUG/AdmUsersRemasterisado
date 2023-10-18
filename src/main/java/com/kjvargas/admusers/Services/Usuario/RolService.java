@@ -1,6 +1,7 @@
 package com.kjvargas.admusers.Services.Usuario;
 
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
+import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class RolService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     public List<Rol> findAllRoles() {
         StoredProcedureQuery storedProcedure = entityManager
@@ -33,11 +37,17 @@ public class RolService {
             rol.setNombre((String) row[1]);
             roles.add(rol);
         }
-
+        if (roles.isEmpty()) {
+            throw new RuntimeException("No hay roles");
+        }
         return roles;
     }
 
     public List<Rol> findByUserUnassignedRoles(Long id) {
+        Usuario comprobarId = usuarioService.findByIdUser(id);
+        if (comprobarId.getId() == null) {
+            throw new RuntimeException("El usuario no existe");
+        }
         StoredProcedureQuery storedProcedure = entityManager
                 .createStoredProcedureQuery("kjvargas.roles_no_asignado_user")
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
@@ -58,7 +68,11 @@ public class RolService {
         return roles;
     }
 
-    public List<Rol> findRolByUserId(Long id){
+    public List<Rol> findRolByUserId(Long id) {
+        Usuario comprobarId = usuarioService.findByIdUser(id);
+        if (comprobarId.getId() == null) {
+            throw new RuntimeException("El usuario no existe");
+        }
         StoredProcedureQuery storedProcedure = entityManager
                 .createStoredProcedureQuery("kjvargas.find_all_rol_by_id")
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)

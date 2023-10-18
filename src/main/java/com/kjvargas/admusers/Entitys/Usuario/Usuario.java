@@ -2,6 +2,8 @@ package com.kjvargas.admusers.Entitys.Usuario;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kjvargas.admusers.Entitys.CamposObligatorios;
 
 import javax.persistence.Entity;
@@ -35,28 +37,25 @@ public class Usuario extends CamposObligatorios {
     @Column(name = "id_usuario")
     private Long id;
 
-    @NotNull(message = "{app.fiel.notNull.error}")
     @NotBlank(message = "{app.fiel.notEmpty.error}")
     @Column(name = "nombre")
     private String nombre;
 
-    @NotNull(message = "{app.fiel.notNull.error}")
     @NotBlank(message = "{app.fiel.notEmpty.error}")
     @Column(name = "apellido")
     private String apellido;
 
     @Email
-    @NotNull(message = "{app.fiel.notNull.error}")
     @NotBlank(message = "{app.fiel.notEmpty.error}")
     @Column(name = "email")
     private String email;
 
-    @NotNull(message = "{app.fiel.notNull.error}")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @NotBlank(message = "{app.fiel.notEmpty.error}")
     @Column(name = "password")
     private String password;
 
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario"), 
                                     inverseJoinColumns = @JoinColumn(name = "id_rol", referencedColumnName = "id_rol"))

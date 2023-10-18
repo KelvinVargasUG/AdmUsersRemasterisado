@@ -25,7 +25,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
             errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
         }
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage(), errors);
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, errors);
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
 }

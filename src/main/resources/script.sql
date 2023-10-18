@@ -135,7 +135,19 @@ BEGIN
           and u.id_usuario = p_id_user
         ORDER BY u.id_usuario DESC;
 END;
---------------------------------------------------------------------------------------
+---Comprobar existencia del email-----------------------------------------------------------------------
+create or replace procedure KJVARGAS.COMPROBAR_EXIT_EMAIL (
+    p_email IN VARCHAR2,
+    p_respuesta OUT NUMBER
+) as
+begin
+    select 1 into p_respuesta from KJVARGAS.USUARIO u where u.email = p_email;
+exception
+    when no_data_found then
+        p_respuesta := 0;
+end;
+
+
 
 --find all rol--------------------------------------------------------------------
 create or replace PROCEDURE kjvargas.find_all_rol(p_rol out SYS_REFCURSOR)

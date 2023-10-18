@@ -24,35 +24,42 @@ public class UsuarioService {
         storedProcedure.execute();
     }
 
-
     public Usuario createUser(Usuario usuario) {
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.createUsuario")
-                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(5, void.class, ParameterMode.REF_CURSOR);
-
-        storedProcedure.setParameter(1, usuario.getNombre());
-        storedProcedure.setParameter(2, usuario.getApellido());
-        storedProcedure.setParameter(3, usuario.getEmail());
-        storedProcedure.setParameter(4, usuario.getPassword());
-
-        storedProcedure.execute();
-
-        Usuario usuarioResult = new Usuario();
-
-        List<Object[]> resultList = storedProcedure.getResultList();
-        for (Object[] row : resultList) {
-            usuarioResult.setId(((Number) row[0]).longValue());
-            usuarioResult.setNombre((String) row[1]);
-            usuarioResult.setApellido((String) row[2]);
-            usuarioResult.setEmail((String) row[3]);
-            usuarioResult.setEstado((String) row[4]);
+        boolean emailExist = comprobarExistenciaEmail(usuario.getEmail());
+        if (emailExist) {
+            throw new RuntimeException("El email ya existe");
         }
+        if (usuario.getEstado() == null) {
+            StoredProcedureQuery storedProcedure = entityManager
+                    .createStoredProcedureQuery("kjvargas.createUsuario")
+                    .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(5, void.class, ParameterMode.REF_CURSOR);
 
-        return usuarioResult;
+            storedProcedure.setParameter(1, usuario.getNombre());
+            storedProcedure.setParameter(2, usuario.getApellido());
+            storedProcedure.setParameter(3, usuario.getEmail());
+            storedProcedure.setParameter(4, usuario.getPassword());
+
+            storedProcedure.execute();
+
+            Usuario usuarioResult = new Usuario();
+
+            List<Object[]> resultList = storedProcedure.getResultList();
+            for (Object[] row : resultList) {
+                usuarioResult.setId(((Number) row[0]).longValue());
+                usuarioResult.setNombre((String) row[1]);
+                usuarioResult.setApellido((String) row[2]);
+                usuarioResult.setEmail((String) row[3]);
+                usuarioResult.setEstado((String) row[4]);
+            }
+
+            return usuarioResult;
+        } else {
+            throw new RuntimeException("No se puede crear un usuario con estado");
+        }
     }
 
     public List<Usuario> findAllUser() {
@@ -74,7 +81,9 @@ public class UsuarioService {
 
             usuarios.add(usuario);
         }
-
+        if (usuarios.isEmpty()) {
+            throw new RuntimeException("No hay usuarios");
+        }
         return usuarios;
     }
 
@@ -96,11 +105,17 @@ public class UsuarioService {
             usuario.setEmail((String) row[3]);
             usuario.setEstado((String) row[4]);
         }
-
+        if (usuario.getId() == null) {
+            throw new RuntimeException("El usuario no existe");
+        }
         return usuario;
     }
 
     public Usuario updateUser(Usuario usuario, Long id) {
+        Usuario comprobarId = findByIdUser(id);
+        if (comprobarId.getId() == null) {
+            throw new RuntimeException("El usuario no existe");
+        }
         StoredProcedureQuery storedProcedure = entityManager
                 .createStoredProcedureQuery("kjvargas.updateUsuario")
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
@@ -135,6 +150,10 @@ public class UsuarioService {
     }
 
     public String deleteUser(Long id) {
+        Usuario comprobarId = findByIdUser(id);
+        if (comprobarId.getId() == null) {
+            throw new RuntimeException("El usuario no existe");
+        }
         StoredProcedureQuery storedProcedure = entityManager
                 .createStoredProcedureQuery("kjvargas.deleteUsuario")
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
@@ -144,4 +163,23 @@ public class UsuarioService {
         storedProcedure.execute();
         return "Usuario eliminado";
     }
+
+    public boolean comprobarExistenciaEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            throw new RuntimeException("El email no puede ser nulo o vacio");
+        }
+        StoredProcedureQuery storedProcedure = entityManager
+                .createStoredProcedureQuery("kjvargas.comprobar_exit_email")
+                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                .registerStoredProcedureParameter(2, Integer.class, ParameterMode.OUT);
+
+        storedProcedure.setParameter(1, email);
+
+        storedProcedure.execute();
+        Integer respuestaProcedure = (Integer) storedProcedure.getOutputParameterValue(2);
+
+        return respuestaProcedure == 1;
+    }
+
+    ;
 }

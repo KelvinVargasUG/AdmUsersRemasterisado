@@ -27,7 +27,6 @@ public class Rol extends CamposObligatorios {
     @Column(name = "id_rol", unique = true, nullable = false)
     private Long id;
 
-    @NotNull(message = "{app.fiel.notNull.error}")
     @NotBlank(message = "{app.fiel.notEmpty.error}")
     @Column(name = "nombre")
     private String nombre;

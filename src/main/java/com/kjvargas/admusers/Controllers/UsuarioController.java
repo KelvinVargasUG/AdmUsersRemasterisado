@@ -18,27 +18,56 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<Usuario> createUser(@Valid @RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.createUser(usuario));
+    public ResponseEntity<?> createUser(@Valid @RequestBody Usuario usuario) {
+        try {
+            return ResponseEntity.ok(usuarioService.createUser(usuario));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping
     public ResponseEntity<?> findAllUser() {
-        return ResponseEntity.ok(usuarioService.findAllUser());
+        try {
+            return ResponseEntity.ok(usuarioService.findAllUser());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> findByIdUser(@Valid @PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.findByIdUser(id));
+    public ResponseEntity<?> findByIdUser(@Valid @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(usuarioService.findByIdUser(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> updateUser(@Valid @RequestBody Usuario usuario, @PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.updateUser(usuario, id));
+    public ResponseEntity<?> updateUser(@Valid @RequestBody Usuario usuario, @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(usuarioService.updateUser(usuario, id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@Valid @PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.deleteUser(id));
+        try {
+            return ResponseEntity.ok(usuarioService.deleteUser(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/comprobar_exit_email")
+    public ResponseEntity<?> comprobarExistenciaEmail(@Valid @RequestParam("email") String email) {
+        try {
+            return ResponseEntity.ok(usuarioService.comprobarExistenciaEmail(email));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
