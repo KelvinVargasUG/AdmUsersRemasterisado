@@ -3,6 +3,7 @@ package com.kjvargas.admusers.Services.Usuario;
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +29,7 @@ public class UsuarioService {
         storedProcedure.execute();
     }
 
-    public Usuario createUser(Usuario usuario) {
+    public ResponseEntity<Usuario> createUser(Usuario usuario) {
         Usuario emailExist = usuarioRolService.findByIdEmail(usuario.getEmail());
         if (emailExist.getEmail().equals(usuario.getEmail())) {
             if (emailExist.getEstado() == null) {
@@ -65,7 +66,7 @@ public class UsuarioService {
                 usuarioResult.setEstado((String) row[4]);
             }
 
-            return usuarioResult;
+            return ResponseEntity.ok(usuarioResult);
         } else {
             throw new RuntimeException("No se puede crear un usuario con estado");
         }
@@ -134,7 +135,7 @@ public class UsuarioService {
         return usuarioResult;
     }
 
-    public String deleteUser(Long id) {
+    public ResponseEntity<?> deleteUser(Long id) {
         Usuario comprobarId = usuarioRolService.findByIdUser(id);
         if (comprobarId.getId() == null) {
             throw new RuntimeException("El usuario no existe");
@@ -146,7 +147,7 @@ public class UsuarioService {
         storedProcedure.setParameter(1, id);
 
         storedProcedure.execute();
-        return "Usuario eliminado";
+        return ResponseEntity.ok( "Usuario eliminado");
     }
 
     public void habilitarUsuario(Long id_user) {
