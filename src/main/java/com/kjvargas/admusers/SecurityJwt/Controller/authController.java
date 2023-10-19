@@ -1,6 +1,5 @@
 package com.kjvargas.admusers.SecurityJwt.Controller;
 
-import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import com.kjvargas.admusers.SecurityJwt.ConfigurationsJwt.JwtUtils;
 import com.kjvargas.admusers.SecurityJwt.Entitys.JwtRequest;
 import com.kjvargas.admusers.SecurityJwt.Entitys.JwtResponse;
@@ -15,12 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController()
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth")
-public class auth {
+@RequestMapping("/api/auth")
+public class authController {
 
     @Autowired
     private AuthenticationManager authenticationManager;

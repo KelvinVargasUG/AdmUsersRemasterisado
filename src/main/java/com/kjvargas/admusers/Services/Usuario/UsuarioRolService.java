@@ -143,12 +143,12 @@ public class UsuarioRolService {
 
     public UsuarioSecurity findByIdEmailLoad(String email) {
         Long idUser = 0L;
-
+        System.out.println(email);
         if (email == null || email.isEmpty()) {
             throw new RuntimeException("El email no puede ser nulo o vacio");
         }
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.find_user_by_email")
+                .createStoredProcedureQuery("kjvargas.find_user_by_email_load")
                 .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
         storedProcedure.setParameter(1, email);
@@ -163,12 +163,11 @@ public class UsuarioRolService {
             usuario.setPassword((String) row[2]);
         }
 
-        if (idUser == 0L) {
-            throw new RuntimeException("El usuario no existe");
-        }
+
 
         List<Rol> roles = findRolByUserId(idUser);
         usuario.setRoles(roles);
+        System.out.println(usuario.getUsername());
         return usuario;
     };
 }
