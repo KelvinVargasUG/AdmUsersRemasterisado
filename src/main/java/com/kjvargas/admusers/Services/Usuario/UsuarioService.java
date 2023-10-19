@@ -30,45 +30,46 @@ public class UsuarioService {
     }
 
     public ResponseEntity<Usuario> createUser(Usuario usuario) {
-        Usuario emailExist = usuarioRolService.findByIdEmail(usuario.getEmail());
-        if (emailExist.getEmail().equals(usuario.getEmail())) {
+        try {
+            Usuario emailExist = usuarioRolService.findByIdEmail(usuario.getEmail());
+
             if (emailExist.getEstado() == null) {
                 habilitarUsuario(emailExist.getId());
-                throw new RuntimeException("El email ya existe, se habilito el usuario");
+                throw new RuntimeException("El email ya existe, se habilitó el usuario");
             } else {
                 throw new RuntimeException("El email ya existe");
             }
-        }
-        if (usuario.getEstado() == null) {
-            StoredProcedureQuery storedProcedure = entityManager
-                    .createStoredProcedureQuery("kjvargas.createUsuario")
-                    .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(5, void.class, ParameterMode.REF_CURSOR);
+        } catch (RuntimeException ex) {
+            if (usuario.getEstado() == null) {
+                StoredProcedureQuery storedProcedure = entityManager
+                        .createStoredProcedureQuery("kjvargas.createUsuario")
+                        .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                        .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
+                        .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
+                        .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
+                        .registerStoredProcedureParameter(5, void.class, ParameterMode.REF_CURSOR);
 
-            storedProcedure.setParameter(1, usuario.getNombre());
-            storedProcedure.setParameter(2, usuario.getApellido());
-            storedProcedure.setParameter(3, usuario.getEmail());
-            storedProcedure.setParameter(4, usuario.getPassword());
+                storedProcedure.setParameter(1, usuario.getNombre());
+                storedProcedure.setParameter(2, usuario.getApellido());
+                storedProcedure.setParameter(3, usuario.getEmail());
+                storedProcedure.setParameter(4, usuario.getPassword());
 
-            storedProcedure.execute();
+                storedProcedure.execute();
 
-            Usuario usuarioResult = new Usuario();
+                Usuario usuarioResult = new Usuario();
 
-            List<Object[]> resultList = storedProcedure.getResultList();
-            for (Object[] row : resultList) {
-                usuarioResult.setId(((Number) row[0]).longValue());
-                usuarioResult.setNombre((String) row[1]);
-                usuarioResult.setApellido((String) row[2]);
-                usuarioResult.setEmail((String) row[3]);
-                usuarioResult.setEstado((String) row[4]);
+                List<Object[]> resultList = storedProcedure.getResultList();
+                for (Object[] row : resultList) {
+                    usuarioResult.setId(((Number) row[0]).longValue());
+                    usuarioResult.setNombre((String) row[1]);
+                    usuarioResult.setApellido((String) row[2]);
+                    usuarioResult.setEmail((String) row[3]);
+                    usuarioResult.setEstado((String) row[4]);
+                }
+                return ResponseEntity.ok(usuarioResult);
+            } else {
+                throw new RuntimeException("No se puede crear un usuario con estado");
             }
-
-            return ResponseEntity.ok(usuarioResult);
-        } else {
-            throw new RuntimeException("No se puede crear un usuario con estado");
         }
     }
 
@@ -147,7 +148,7 @@ public class UsuarioService {
         storedProcedure.setParameter(1, id);
 
         storedProcedure.execute();
-        return ResponseEntity.ok( "Usuario eliminado");
+        return ResponseEntity.ok("Usuario eliminado");
     }
 
     public void habilitarUsuario(Long id_user) {
