@@ -25,6 +25,9 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody Usuario usuario) {
         try {
+            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+                throw new RuntimeException("El password es obligatorio");
+            }
             return ResponseEntity.ok(usuarioService.createUser(usuario));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

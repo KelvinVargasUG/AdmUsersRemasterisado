@@ -99,26 +99,27 @@ public class UsuarioService {
     }
 
     public Usuario updateUser(Usuario usuario, Long id) {
-        Usuario comprobarId = usuarioRolService.findByIdUser(id);
-        if (comprobarId.getId() == null) {
+        Usuario usuarioByid = usuarioRolService.findByIdUser(id);
+        if (usuarioByid.getId() == null) {
             throw new RuntimeException("El usuario no existe");
         }
+
         StoredProcedureQuery storedProcedure = entityManager
                 .createStoredProcedureQuery("kjvargas.updateUsuario")
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
+                //.registerStoredProcedureParameter(5, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(5, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(6, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(7, void.class, ParameterMode.REF_CURSOR);
+                .registerStoredProcedureParameter(6, void.class, ParameterMode.REF_CURSOR);
 
         storedProcedure.setParameter(1, id);
         storedProcedure.setParameter(2, usuario.getNombre());
         storedProcedure.setParameter(3, usuario.getApellido());
         storedProcedure.setParameter(4, usuario.getEmail());
-        storedProcedure.setParameter(5, usuario.getPassword());
-        storedProcedure.setParameter(6, usuario.getEstado());
+        //storedProcedure.setParameter(5, usuarioByid.getPassword());
+        storedProcedure.setParameter(5, usuario.getEstado());
 
         storedProcedure.execute();
 

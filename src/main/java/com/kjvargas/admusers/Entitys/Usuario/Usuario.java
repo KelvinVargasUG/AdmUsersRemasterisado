@@ -51,14 +51,13 @@ public class Usuario extends CamposObligatorios {
     private String email;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @NotBlank(message = "{app.fiel.notEmpty.error}")
     @Column(name = "password")
     private String password;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario"), 
-                                    inverseJoinColumns = @JoinColumn(name = "id_rol", referencedColumnName = "id_rol"))
+    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_rol", referencedColumnName = "id_rol"))
     private List<Rol> roles;
 
 }

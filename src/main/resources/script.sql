@@ -64,7 +64,7 @@ create or replace PROCEDURE kjvargas.updateUsuario(p_id_usuario in NUMBER,
                                                    p_nombre in varchar2,
                                                    p_apellido in varchar2,
                                                    p_email in varchar2,
-                                                   p_password in varchar2,
+                                                 --  p_password in varchar2,
                                                    p_estado in varchar2,
                                                    p_users out SYS_REFCURSOR)
 as
@@ -74,7 +74,7 @@ begin
         nombre             = p_nombre,
         apellido           = p_apellido,
         email              = p_email,
-        password           = p_password,
+       -- password           = p_password,
         estado             = p_estado
     where id_usuario = p_id_usuario;
 
