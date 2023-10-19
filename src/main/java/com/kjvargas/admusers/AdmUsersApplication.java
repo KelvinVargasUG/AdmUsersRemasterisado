@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AdmUsersApplication {
 
     public static void main(String[] args) {
+
+        12345
         SpringApplication.run(AdmUsersApplication.class, args);
     }
 

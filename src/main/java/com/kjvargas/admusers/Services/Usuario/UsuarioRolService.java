@@ -2,6 +2,7 @@ package com.kjvargas.admusers.Services.Usuario;
 
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
+import com.kjvargas.admusers.SecurityJwt.Entitys.UsuarioSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -136,6 +137,37 @@ public class UsuarioRolService {
         }
 
         List<Rol> roles = findRolByUserId(usuario.getId());
+        usuario.setRoles(roles);
+        return usuario;
+    };
+
+    public UsuarioSecurity findByIdEmailLoad(String email) {
+        Long idUser = 0L;
+
+        if (email == null || email.isEmpty()) {
+            throw new RuntimeException("El email no puede ser nulo o vacio");
+        }
+        StoredProcedureQuery storedProcedure = entityManager
+                .createStoredProcedureQuery("kjvargas.find_user_by_email")
+                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
+        storedProcedure.setParameter(1, email);
+        storedProcedure.execute();
+
+        UsuarioSecurity usuario = new UsuarioSecurity();
+
+        List<Object[]> resultList = storedProcedure.getResultList();
+        for (Object[] row : resultList) {
+            idUser = (((Number) row[0]).longValue());
+            usuario.setEmail((String) row[1]);
+            usuario.setPassword((String) row[2]);
+        }
+
+        if (idUser == 0L) {
+            throw new RuntimeException("El usuario no existe");
+        }
+
+        List<Rol> roles = findRolByUserId(idUser);
         usuario.setRoles(roles);
         return usuario;
     };

@@ -4,6 +4,7 @@ import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,8 +23,14 @@ public class UsuarioService {
     @Autowired
     private UsuarioRolService usuarioRolService;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
     @PostConstruct
     private void createUserAdmin() {
+        System.out.println("ESte ES: "+ this.bCryptPasswordEncoder.encode("12345"));
+
         StoredProcedureQuery storedProcedure = entityManager
                 .createStoredProcedureQuery("kjvargas.createAdminUser");
         storedProcedure.execute();

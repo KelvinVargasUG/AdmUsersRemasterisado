@@ -152,6 +152,18 @@ BEGIN
         WHERE u.EMAIL = p_email;
 END;
 
+--loadUser------------------------------------------------------------------------------------------------------
+create or replace PROCEDURE kjvargas.find_user_by_email_load(p_email in varchar2, p_users out SYS_REFCURSOR)
+    IS
+BEGIN
+    OPEN p_users FOR
+        SELECT u.email,
+               u.password
+        FROM kjvargas.usuario u
+                 INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
+                 INNER JOIN kjvargas.rol rol ON ur.id_rol = rol.id_rol
+        WHERE u.EMAIL = p_email;
+END;
 
 
 --habilitar usuario--------------------------------------------------------------------
