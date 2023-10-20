@@ -33,12 +33,12 @@ public class authController {
 
     @PostMapping("/generate-token")
     public ResponseEntity<?> generarToken(@RequestBody JwtRequest jwtRequest) throws Exception {
-        try {
+        try{
             autenticar(jwtRequest.getEmail(), jwtRequest.getPassword());
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("Usuario no encontrado");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+        autenticar(jwtRequest.getEmail(), jwtRequest.getPassword());
 
         UserDetails userDetails = this.userDetailService.loadUserByUsername(jwtRequest.getEmail());
         String token = this.jwtUtils.generateToken(userDetails);
@@ -49,12 +49,11 @@ public class authController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         } catch (DisabledException e) {
-            throw new Exception("Usuario Deshabilitado " + e.getMessage());
+            throw new RuntimeException("Usuario Deshabilitado " + e.getMessage());
         } catch (BadCredentialsException e) {
-            throw new Exception("Credenciales Invalidas " + e.getMessage());
+            throw new RuntimeException("Credenciales Invalidas");
         }
     }
-
     /*
     @PostMapping("/registrar")
     public ResponseEntity<Usuario> registrarUsuario(@Valid @RequestBody Usuario usuario) {
