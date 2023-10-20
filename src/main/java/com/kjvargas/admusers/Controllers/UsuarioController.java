@@ -4,8 +4,6 @@ import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import com.kjvargas.admusers.Services.Usuario.UsuarioRolService;
 import com.kjvargas.admusers.Services.Usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +22,7 @@ public class UsuarioController {
     private UsuarioRolService usuarioRolService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> createUser(@Valid @RequestBody Usuario usuario) {
         try {
             if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
@@ -36,7 +35,7 @@ public class UsuarioController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('Rol_User')")
+    @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> findAllUser() {
         try {
             return ResponseEntity.ok(usuarioService.findAllUser());
@@ -46,6 +45,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> findByIdUser(@Valid @PathVariable Long id) {
         try {
             return ResponseEntity.ok(usuarioRolService.findByIdUser(id));
@@ -55,6 +55,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Rol_Admin') and hasAuthority('Rol_User')")
     public ResponseEntity<?> updateUser(@Valid @RequestBody Usuario usuario, @PathVariable Long id) {
         try {
             return ResponseEntity.ok(usuarioService.updateUser(usuario, id));
@@ -64,6 +65,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> deleteUser(@Valid @PathVariable Long id) {
         try {
             return ResponseEntity.ok(usuarioService.deleteUser(id));
@@ -73,6 +75,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/comprobar_exit_email")
+    @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> comprobarExistenciaEmail(@Valid @RequestParam("email") String email) {
         try {
             return ResponseEntity.ok(usuarioRolService.findByIdEmail(email));
@@ -82,6 +85,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/update_rol")
+    @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> updateRol(@Valid @RequestParam("rol") Long rol, @RequestParam("user") Long user) {
         try {
             return ResponseEntity.ok(usuarioRolService.updateRolUser(rol, user));

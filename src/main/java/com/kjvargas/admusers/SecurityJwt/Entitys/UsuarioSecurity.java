@@ -2,6 +2,7 @@ package com.kjvargas.admusers.SecurityJwt.Entitys;
 
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import lombok.Data;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,13 +11,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
+
 public class UsuarioSecurity implements UserDetails {
 
+    @Setter
     private String email;
 
+    @Setter
     private String password;
 
+    @Setter
     private List<Rol> roles;
 
     @Override

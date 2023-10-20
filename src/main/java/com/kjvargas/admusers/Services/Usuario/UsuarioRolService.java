@@ -9,16 +9,15 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class UsuarioRolService {
     @Autowired
     private EntityManager entityManager;
-
-    @Autowired
-    private RolService rolService;
 
     public List<Rol> findByUserUnassignedRoles(Long id) {
         Usuario comprobarId = findByIdUser(id);
@@ -59,7 +58,6 @@ public class UsuarioRolService {
         for (Object[] row : resultList) {
             rol.setId(((Number) row[0]).longValue());
             rol.setNombre((String) row[1]);
-            System.out.println(row[1]);
             rolesUsuario.add(rol);
         }
         if(rolesUsuario.isEmpty()){
@@ -143,7 +141,6 @@ public class UsuarioRolService {
 
     public UsuarioSecurity findByIdEmailLoad(String email) {
         Long idUser = 0L;
-        System.out.println(email);
         if (email == null || email.isEmpty()) {
             throw new RuntimeException("El email no puede ser nulo o vacio");
         }
@@ -163,11 +160,9 @@ public class UsuarioRolService {
             usuario.setPassword((String) row[2]);
         }
 
-
-
         List<Rol> roles = findRolByUserId(idUser);
         usuario.setRoles(roles);
-        System.out.println(usuario.getUsername());
+
         return usuario;
     };
 }

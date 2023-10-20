@@ -3,6 +3,7 @@ package com.kjvargas.admusers.Services.Usuario;
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,24 @@ public class UsuarioService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Value("${user-email-admin}")
+    private String emailAdmin;
+
+    @Value("${user-password-admin}")
+    private String passwordAdmin;
 
     @PostConstruct
     private void createUserAdmin() {
-        System.out.println("ESte ES: "+ this.bCryptPasswordEncoder.encode("12345"));
+        String passwordEncrypt = this.bCryptPasswordEncoder.encode(passwordAdmin);
 
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.createAdminUser");
+                .createStoredProcedureQuery("kjvargas.createAdminUser")
+                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                .registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
+
+        storedProcedure.setParameter(1, emailAdmin);
+        storedProcedure.setParameter(2, passwordEncrypt);
+
         storedProcedure.execute();
     }
 
@@ -144,7 +156,7 @@ public class UsuarioService {
         return usuarioResult;
     }
 
-    public ResponseEntity<?> deleteUser(Long id) {
+    public ResponseEntity<?> deleteUser(long id) {
         Usuario comprobarId = usuarioRolService.findByIdUser(id);
         if (comprobarId.getId() == null) {
             throw new RuntimeException("El usuario no existe");

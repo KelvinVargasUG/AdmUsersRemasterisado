@@ -23,7 +23,6 @@ public class UserDetailService implements UserDetailsService {
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuario no encontrado");
         } else {
-            System.out.println(usuario.getUsername() + usuario.getAuthorities());
             return usuario;
         }
 
