@@ -1,5 +1,6 @@
 package com.kjvargas.admusers.SecurityJwt.Controller;
 
+import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import com.kjvargas.admusers.SecurityJwt.ConfigurationsJwt.JwtUtils;
 import com.kjvargas.admusers.SecurityJwt.Entitys.JwtRequest;
 import com.kjvargas.admusers.SecurityJwt.Entitys.JwtResponse;
@@ -13,6 +14,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController()
 @CrossOrigin(origins = "*")
@@ -33,7 +36,7 @@ public class authController {
 
     @PostMapping("/generate-token")
     public ResponseEntity<?> generarToken(@RequestBody JwtRequest jwtRequest) throws Exception {
-        try{
+        try {
             autenticar(jwtRequest.getEmail(), jwtRequest.getPassword());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -54,12 +57,19 @@ public class authController {
             throw new RuntimeException("Credenciales Invalidas");
         }
     }
-    /*
-    @PostMapping("/registrar")
-    public ResponseEntity<Usuario> registrarUsuario(@Valid @RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.createUsuario(usuario,"Registre"));
-    }
 
+    @PostMapping("/registrar")
+    public ResponseEntity<?> registrarUsuario(@Valid @RequestBody Usuario usuario) {
+        try {
+            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+                return ResponseEntity.badRequest().body("El password es obligatorio");
+            }
+            return ResponseEntity.ok(usuarioService.createUser(usuario));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+/*
     @GetMapping("/actual-usuario")
     public ResponseEntity<DTOLogin> obtenerUsuarioActual(Principal principal) {
         User user = (User) this.userDetailService.loadUserByUsername(principal.getName());

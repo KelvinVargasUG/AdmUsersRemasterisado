@@ -50,45 +50,44 @@ public class UsuarioService {
 
     public ResponseEntity<Usuario> createUser(Usuario usuario) {
         try {
+            String passwordEncrypt = this.bCryptPasswordEncoder.encode(usuario.getPassword());
+
+            StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("kjvargas.createUsuario")
+                    .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
+                    .registerStoredProcedureParameter(5, void.class, ParameterMode.REF_CURSOR);
+
+            storedProcedure.setParameter(1, usuario.getNombre());
+            storedProcedure.setParameter(2, usuario.getApellido());
+            storedProcedure.setParameter(3, usuario.getEmail());
+            storedProcedure.setParameter(4, passwordEncrypt);
+
+            storedProcedure.execute();
+
+            Usuario usuarioResult = new Usuario();
+
+            List<Object[]> resultList = storedProcedure.getResultList();
+            for (Object[] row : resultList) {
+                usuarioResult.setId(((Number) row[0]).longValue());
+                usuarioResult.setNombre((String) row[1]);
+                usuarioResult.setApellido((String) row[2]);
+                usuarioResult.setEmail((String) row[3]);
+                usuarioResult.setEstado((String) row[4]);
+            }
+
+            return ResponseEntity.ok(usuarioResult);
+        } catch (Exception e) {
             Usuario emailExist = usuarioRolService.findByIdEmail(usuario.getEmail());
-
-            if (emailExist.getEstado() == null) {
-                habilitarUsuario(emailExist.getId());
-                throw new RuntimeException("El email ya existe, se habilitó el usuario");
-            } else {
-                throw new RuntimeException("El email ya existe");
-            }
-        } catch (RuntimeException ex) {
-            if (usuario.getEstado() == null) {
-                StoredProcedureQuery storedProcedure = entityManager
-                        .createStoredProcedureQuery("kjvargas.createUsuario")
-                        .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                        .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
-                        .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
-                        .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
-                        .registerStoredProcedureParameter(5, void.class, ParameterMode.REF_CURSOR);
-
-                storedProcedure.setParameter(1, usuario.getNombre());
-                storedProcedure.setParameter(2, usuario.getApellido());
-                storedProcedure.setParameter(3, usuario.getEmail());
-                storedProcedure.setParameter(4, usuario.getPassword());
-
-                storedProcedure.execute();
-
-                Usuario usuarioResult = new Usuario();
-
-                List<Object[]> resultList = storedProcedure.getResultList();
-                for (Object[] row : resultList) {
-                    usuarioResult.setId(((Number) row[0]).longValue());
-                    usuarioResult.setNombre((String) row[1]);
-                    usuarioResult.setApellido((String) row[2]);
-                    usuarioResult.setEmail((String) row[3]);
-                    usuarioResult.setEstado((String) row[4]);
+            if (emailExist != null) {
+                if (emailExist.getEstado() == null) {
+                    habilitarUsuario(emailExist.getId());
+                    throw new RuntimeException("El email ya existe, se habilitó el usuario");
                 }
-                return ResponseEntity.ok(usuarioResult);
-            } else {
-                throw new RuntimeException("No se puede crear un usuario con estado");
+                throw new RuntimeException("El correo electrónico ya existe");
             }
+            return null;
         }
     }
 
