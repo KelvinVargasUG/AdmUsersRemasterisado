@@ -4,6 +4,7 @@ import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import com.kjvargas.admusers.SecurityJwt.ConfigurationsJwt.JwtUtils;
 import com.kjvargas.admusers.SecurityJwt.Entitys.JwtRequest;
 import com.kjvargas.admusers.SecurityJwt.Entitys.JwtResponse;
+import com.kjvargas.admusers.SecurityJwt.Entitys.UsuarioSecurity;
 import com.kjvargas.admusers.SecurityJwt.SecuritySpring.UserDetailService;
 import com.kjvargas.admusers.Services.Usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+
 
 import javax.validation.Valid;
 
@@ -69,18 +73,16 @@ public class authController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-/*
+
     @GetMapping("/actual-usuario")
-    public ResponseEntity<DTOLogin> obtenerUsuarioActual(Principal principal) {
-        User user = (User) this.userDetailService.loadUserByUsername(principal.getName());
-        List<DTOLogin.AuthorityDTO> authorityDTOs = user.getAuthorities().stream()
-                .map(authority -> new DTOLogin.AuthorityDTO(authority.getAuthority()))
-                .collect(Collectors.toList());
-
-        DTOLogin userDTO = new DTOLogin(user.getUsername(), authorityDTOs);
-
-        return ResponseEntity.ok(userDTO);
+    public ResponseEntity<?> obtenerUsuarioActual(Principal principal) {
+        try {
+            UsuarioSecurity usuario = (UsuarioSecurity) this.userDetailService.loadUserByUsername(principal.getName());
+            return ResponseEntity.ok(usuario);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-     */
+
 }

@@ -1,5 +1,6 @@
 package com.kjvargas.admusers.SecurityJwt.Entitys;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import lombok.Data;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class UsuarioSecurity implements UserDetails {
     @Setter
     private String email;
 
+    @JsonIgnore
     @Setter
     private String password;
 
@@ -42,21 +44,25 @@ public class UsuarioSecurity implements UserDetails {
         return this.email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
