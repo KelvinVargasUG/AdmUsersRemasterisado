@@ -1,5 +1,6 @@
 package com.kjvargas.admusers.Entitys.Usuario;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kjvargas.admusers.Entitys.CamposObligatorios;
 
 import javax.persistence.Entity;
@@ -29,5 +30,9 @@ public class Rol extends CamposObligatorios {
 
     @Column(name = "nombre")
     private String nombre;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Column(name = "descripcion")
+    private String descripcion;
 
 }

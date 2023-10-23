@@ -19,13 +19,13 @@ BEGIN
 EXCEPTION
     WHEN no_data_found THEN
         INSERT INTO kjvargas.rol
-        (fecha_creacion, fecha_modificacion, nombre)
-        VALUES (sysdate, sysdate, 'Rol_Admin')
+        (fecha_creacion, fecha_modificacion, nombre, descripcion)
+        VALUES (sysdate, sysdate, 'Rol_Admin', 'Rol de administrador puede crear e eliminar usuarios')
         RETURNING ID_ROL INTO v_id_rol;
 
         INSERT INTO kjvargas.ROL
-        (fecha_creacion, fecha_modificacion, nombre)
-        VALUES (sysdate, sysdate, 'Rol_User');
+        (fecha_creacion, fecha_modificacion, nombre, descripcion)
+        VALUES (sysdate, sysdate, 'Rol_User', 'Rol de usuario con permisos limitados');
 
         INSERT INTO kjvargas.usuario
         (fecha_creacion, fecha_modificacion, email, nombre, apellido, PASSWORD)
@@ -189,7 +189,7 @@ CREATE OR REPLACE PROCEDURE kjvargas.find_all_rol(p_rol OUT SYS_REFCURSOR)
     IS
 BEGIN
 OPEN p_rol FOR
-SELECT rol.id_rol, rol.nombre
+SELECT rol.id_rol, rol.nombre, rol.descripcion
 FROM kjvargas.rol rol
 WHERE rol.estado IS NOT NULL;
 END find_all_rol;

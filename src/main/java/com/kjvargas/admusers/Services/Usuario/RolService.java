@@ -32,6 +32,7 @@ public class RolService {
             Rol rol = new Rol();
             rol.setId(((Number) row[0]).longValue());
             rol.setNombre((String) row[1]);
+            rol.setDescripcion((String) row[2]);
             roles.add(rol);
         }
         if (roles.isEmpty()) {
