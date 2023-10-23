@@ -58,6 +58,7 @@ public class UsuarioRolService {
         for (Object[] row : resultList) {
             rol.setId(((Number) row[0]).longValue());
             rol.setNombre((String) row[1]);
+            rol.setDescripcion((String) row[2]);
             rolesUsuario.add(rol);
         }
         if(rolesUsuario.isEmpty()){
