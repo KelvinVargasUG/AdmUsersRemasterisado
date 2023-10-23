@@ -1,11 +1,10 @@
 package com.kjvargas.admusers.SecurityJwt.SecuritySpring;
 
-import org.springframework.security.core.userdetails.User;
+import com.kjvargas.admusers.Repositories.UsuarioRepository;
 import com.kjvargas.admusers.SecurityJwt.Entitys.UsuarioSecurity;
 import com.kjvargas.admusers.Services.Usuario.UsuarioRolService;
 import com.kjvargas.admusers.Services.Usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,8 +12,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailService implements UserDetailsService {
+    
     @Autowired
-    UsuarioRolService usuarioRolService;
+    private UsuarioRolService usuarioRolService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

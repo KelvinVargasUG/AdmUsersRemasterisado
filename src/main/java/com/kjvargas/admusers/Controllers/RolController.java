@@ -1,6 +1,5 @@
 package com.kjvargas.admusers.Controllers;
 
-import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Services.Usuario.RolService;
 import com.kjvargas.admusers.Services.Usuario.UsuarioRolService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -36,7 +34,7 @@ public class RolController {
     @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> findByUserUnassignedRoles(@Valid @PathVariable Long id) {
         try {
-            return ResponseEntity.ok(usuarioRolService.findByUserUnassignedRoles(id));
+            return ResponseEntity.ok(this.usuarioRolService.findByUserUnassignedRoles(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -46,7 +44,7 @@ public class RolController {
     @PreAuthorize("hasAuthority('Rol_Admin')")
     public ResponseEntity<?> findRolByUserId(@Valid @PathVariable Long id) {
         try {
-            return ResponseEntity.ok(usuarioRolService.findRolByUserId(id));
+            return ResponseEntity.ok(this.usuarioRolService.findRolByUserId(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

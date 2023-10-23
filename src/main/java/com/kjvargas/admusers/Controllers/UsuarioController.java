@@ -76,7 +76,7 @@ public class UsuarioController {
 
     @GetMapping("/comprobar_exit_email")
     @PreAuthorize("hasAuthority('Rol_Admin')")
-    public ResponseEntity<?> comprobarExistenciaEmail(@Valid @RequestParam("email") String email) {
+    public ResponseEntity<?> comprobarExistenciaEmail(@Valid @RequestParam("    ") String email) {
         try {
             return ResponseEntity.ok(usuarioRolService.findByIdEmail(email));
         } catch (Exception e) {

@@ -1,31 +1,25 @@
 package com.kjvargas.admusers.Services.Usuario;
 
-import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
+import com.kjvargas.admusers.Repositories.UsuarioRepository;
+import com.kjvargas.admusers.Repositories.UsuarioRolRepository;
+import com.kjvargas.admusers.SecurityJwt.Entitys.UsuarioSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.StoredProcedureQuery;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UsuarioService {
 
     @Autowired
-    private EntityManager entityManager;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private UsuarioRolService usuarioRolService;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UsuarioRolRepository usuarioRolRepository;
 
     @Value("${user-email-admin}")
     private String emailAdmin;
@@ -35,54 +29,21 @@ public class UsuarioService {
 
     @PostConstruct
     private void createUserAdmin() {
-        String passwordEncrypt = this.bCryptPasswordEncoder.encode(passwordAdmin);
-
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.createAdminUser")
-                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
-
-        storedProcedure.setParameter(1, emailAdmin);
-        storedProcedure.setParameter(2, passwordEncrypt);
-
-        storedProcedure.execute();
+        usuarioRepository.createUserAdmin(emailAdmin, passwordAdmin);
     }
 
     public ResponseEntity<Usuario> createUser(Usuario usuario) {
+        if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
+            throw new RuntimeException("El email no puede ser nulo o vacio");
+        }
         try {
-            String passwordEncrypt = this.bCryptPasswordEncoder.encode(usuario.getPassword());
-
-            StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("kjvargas.createUsuario")
-                    .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter(5, void.class, ParameterMode.REF_CURSOR);
-
-            storedProcedure.setParameter(1, usuario.getNombre());
-            storedProcedure.setParameter(2, usuario.getApellido());
-            storedProcedure.setParameter(3, usuario.getEmail());
-            storedProcedure.setParameter(4, passwordEncrypt);
-
-            storedProcedure.execute();
-
-            Usuario usuarioResult = new Usuario();
-
-            List<Object[]> resultList = storedProcedure.getResultList();
-            for (Object[] row : resultList) {
-                usuarioResult.setId(((Number) row[0]).longValue());
-                usuarioResult.setNombre((String) row[1]);
-                usuarioResult.setApellido((String) row[2]);
-                usuarioResult.setEmail((String) row[3]);
-                usuarioResult.setEstado((String) row[4]);
-            }
-
+            Usuario usuarioResult = usuarioRepository.createUser(usuario);
             return ResponseEntity.ok(usuarioResult);
         } catch (Exception e) {
-            Usuario emailExist = usuarioRolService.findByIdEmail(usuario.getEmail());
+            Usuario emailExist = usuarioRolRepository.findByIdEmail(usuario.getEmail());
             if (emailExist != null) {
                 if (emailExist.getEstado() == null) {
-                    habilitarUsuario(emailExist.getId());
+                    this.usuarioRepository.habilitarUsuario(emailExist.getId());
                     throw new RuntimeException("El email ya existe, se habilitó el usuario");
                 }
                 throw new RuntimeException("El correo electrónico ya existe");
@@ -92,27 +53,7 @@ public class UsuarioService {
     }
 
     public List<Usuario> findAllUser() {
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.find_all_users")
-                .registerStoredProcedureParameter(1, void.class, ParameterMode.REF_CURSOR);
-        storedProcedure.execute();
-
-        List<Usuario> usuarios = new ArrayList<>();
-        //List<Usuario> usuarios =  storedProcedure.getResultList();
-
-
-        List<Object[]> resultList = storedProcedure.getResultList();
-        for (Object[] row : resultList) {
-            Usuario usuario = new Usuario();
-            usuario.setId(((Number) row[0]).longValue());
-            usuario.setNombre((String) row[1]);
-            usuario.setApellido((String) row[2]);
-            usuario.setEmail((String) row[3]);
-            usuario.setEstado((String) row[4]);
-
-            usuarios.add(usuario);
-        }
-
+        List<Usuario> usuarios = usuarioRepository.findAllUser();
 
         if (usuarios.isEmpty()) {
             throw new RuntimeException("No hay usuarios");
@@ -121,66 +62,17 @@ public class UsuarioService {
     }
 
     public Usuario updateUser(Usuario usuario, Long id) {
-        Usuario usuarioByid = usuarioRolService.findByIdUser(id);
+        Usuario usuarioByid = usuarioRepository.updateUser(usuario, id);
         if (usuarioByid.getId() == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.updateUsuario")
-                .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
-                //.registerStoredProcedureParameter(5, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(5, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(6, void.class, ParameterMode.REF_CURSOR);
-
-        storedProcedure.setParameter(1, id);
-        storedProcedure.setParameter(2, usuario.getNombre());
-        storedProcedure.setParameter(3, usuario.getApellido());
-        storedProcedure.setParameter(4, usuario.getEmail());
-        //storedProcedure.setParameter(5, usuarioByid.getPassword());
-        storedProcedure.setParameter(5, usuario.getEstado());
-
-        storedProcedure.execute();
-
-        Usuario usuarioResult = new Usuario();
-
-        List<Object[]> resultList = storedProcedure.getResultList();
-        for (Object[] row : resultList) {
-            usuarioResult.setId(((Number) row[0]).longValue());
-            usuarioResult.setNombre((String) row[1]);
-            usuarioResult.setApellido((String) row[2]);
-            usuarioResult.setEmail((String) row[3]);
-            usuarioResult.setEstado((String) row[4]);
-        }
-
-        return usuarioResult;
+        return this.updateUser(usuario, id);
     }
 
     public ResponseEntity<?> deleteUser(long id) {
-        Usuario comprobarId = usuarioRolService.findByIdUser(id);
-        if (comprobarId.getId() == null) {
-            throw new RuntimeException("El usuario no existe");
-        }
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.deleteUsuario")
-                .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
-
-        storedProcedure.setParameter(1, id);
-
-        storedProcedure.execute();
+        this.usuarioRepository.deleteUser(id);
         return ResponseEntity.ok("Usuario eliminado");
-    }
-
-    public void habilitarUsuario(Long id_user) {
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.habilitar_usuario")
-                .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
-
-        storedProcedure.setParameter(1, id_user);
-        storedProcedure.execute();
     }
 
 }

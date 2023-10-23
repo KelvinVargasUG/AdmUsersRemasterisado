@@ -2,6 +2,8 @@ package com.kjvargas.admusers.Services.Usuario;
 
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
+import com.kjvargas.admusers.Repositories.RolRepository;
+import com.kjvargas.admusers.Repositories.UsuarioRolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,30 +18,16 @@ import java.util.List;
 public class RolService {
 
     @Autowired
-    private EntityManager entityManager;
+    RolRepository rolRepository;
+
+    @Autowired
+    UsuarioRolRepository usuarioRolRepository;
 
     public List<Rol> findAllRoles() {
-        StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery("kjvargas.find_all_rol")
-                .registerStoredProcedureParameter(1, void.class, ParameterMode.REF_CURSOR);
-
-        storedProcedure.execute();
-
-        List<Rol> roles = new ArrayList<>();
-
-        List<Object[]> resultList = storedProcedure.getResultList();
-        for (Object[] row : resultList) {
-            Rol rol = new Rol();
-            rol.setId(((Number) row[0]).longValue());
-            rol.setNombre((String) row[1]);
-            rol.setDescripcion((String) row[2]);
-            roles.add(rol);
-        }
+        List<Rol> roles = rolRepository.findAllRoles();
         if (roles.isEmpty()) {
             throw new RuntimeException("No hay roles");
         }
         return roles;
     }
-
-
 }
