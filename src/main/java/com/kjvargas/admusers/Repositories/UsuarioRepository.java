@@ -119,8 +119,7 @@ public class UsuarioRepository {
                 .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(4, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(5, String.class, ParameterMode.IN)
-                .registerStoredProcedureParameter(6, void.class, ParameterMode.REF_CURSOR);
+                .registerStoredProcedureParameter(5, String.class, ParameterMode.IN);
 
         storedProcedure.setParameter(1, id);
         storedProcedure.setParameter(2, usuario.getNombre());
@@ -130,16 +129,7 @@ public class UsuarioRepository {
 
         storedProcedure.execute();
 
-        Usuario usuarioResult = new Usuario();
-
-        List<Object[]> resultList = storedProcedure.getResultList();
-        for (Object[] row : resultList) {
-            usuarioResult.setId(((Number) row[0]).longValue());
-            usuarioResult.setNombre((String) row[1]);
-            usuarioResult.setApellido((String) row[2]);
-            usuarioResult.setEmail((String) row[3]);
-            usuarioResult.setEstado((String) row[4]);
-        }
+        Usuario usuarioResult = this.usuarioRolRepository.findByIdUser(id);
 
         return usuarioResult;
     }

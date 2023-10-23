@@ -55,7 +55,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('Rol_Admin') and hasAuthority('Rol_User')")
+    @PreAuthorize("hasAuthority('Rol_Admin') or hasAuthority('Rol_User')")
     public ResponseEntity<?> updateUser(@Valid @RequestBody Usuario usuario, @PathVariable Long id) {
         try {
             return ResponseEntity.ok(usuarioService.updateUser(usuario, id));

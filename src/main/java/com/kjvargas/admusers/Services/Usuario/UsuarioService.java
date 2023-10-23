@@ -62,12 +62,11 @@ public class UsuarioService {
     }
 
     public Usuario updateUser(Usuario usuario, Long id) {
-        Usuario usuarioByid = usuarioRepository.updateUser(usuario, id);
+        Usuario usuarioByid = usuarioRolRepository.findByIdUser(id);
         if (usuarioByid.getId() == null) {
             throw new RuntimeException("El usuario no existe");
         }
-
-        return this.updateUser(usuario, id);
+        return this.usuarioRepository.updateUser(usuario, id);
     }
 
     public ResponseEntity<?> deleteUser(long id) {
