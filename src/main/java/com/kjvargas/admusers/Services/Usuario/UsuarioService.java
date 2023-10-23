@@ -98,6 +98,8 @@ public class UsuarioService {
         storedProcedure.execute();
 
         List<Usuario> usuarios = new ArrayList<>();
+        //List<Usuario> usuarios =  storedProcedure.getResultList();
+
 
         List<Object[]> resultList = storedProcedure.getResultList();
         for (Object[] row : resultList) {
@@ -110,6 +112,8 @@ public class UsuarioService {
 
             usuarios.add(usuario);
         }
+
+
         if (usuarios.isEmpty()) {
             throw new RuntimeException("No hay usuarios");
         }

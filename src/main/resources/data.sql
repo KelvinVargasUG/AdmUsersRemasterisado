@@ -158,7 +158,8 @@ CREATE OR REPLACE PROCEDURE kjvargas.find_user_by_email_load(p_email IN VARCHAR2
     IS
 BEGIN
 OPEN p_users FOR
-SELECT U.email,
+SELECT U.id_usuario,
+       U.email,
        U.PASSWORD
 FROM kjvargas.usuario U
          INNER JOIN kjvargas.usuario_rol ur ON U.id_usuario = ur.id_usuario
