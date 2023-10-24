@@ -76,7 +76,7 @@ public class UsuarioController {
 
     @GetMapping("/comprobar_exit_email")
     @PreAuthorize("hasAuthority('Rol_Admin')")
-    public ResponseEntity<?> comprobarExistenciaEmail(@Valid @RequestParam("    ") String email) {
+    public ResponseEntity<?> comprobarExistenciaEmail(@Valid @RequestParam("email") String email) {
         try {
             return ResponseEntity.ok(usuarioRolService.findByIdEmail(email));
         } catch (Exception e) {
@@ -84,11 +84,11 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/update_rol")
+    @PutMapping("/{idUser}/update_rol/{idRol}")
     @PreAuthorize("hasAuthority('Rol_Admin')")
-    public ResponseEntity<?> updateRol(@Valid @RequestParam("rol") Long rol, @RequestParam("user") Long user) {
+    public ResponseEntity<?> updateRol(@Valid @PathVariable Long idRol, @PathVariable Long idUser) {
         try {
-            return ResponseEntity.ok(usuarioRolService.updateRolUser(rol, user));
+            return ResponseEntity.ok(usuarioRolService.updateRolUser(idRol, idUser));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

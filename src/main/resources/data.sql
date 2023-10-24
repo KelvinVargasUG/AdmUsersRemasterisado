@@ -36,7 +36,7 @@ EXCEPTION
         (fecha_creacion, fecha_modificacion, id_rol, id_usuario)
         VALUES (sysdate, sysdate, v_id_rol, v_id_usuario);
 END createadminuser;
-
+/
 
 
 --find usuario by id--------------------------------------------------------------------
@@ -57,7 +57,7 @@ WHERE U.estado IS NOT NULL
   AND U.id_usuario = p_id_user
 ORDER BY U.id_usuario DESC;
 END find_users_by_id;
-
+/
 
 --Create usuario User--------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE kjvargas.createusuario(p_nombre IN VARCHAR2,
@@ -79,7 +79,7 @@ VALUES (sysdate, sysdate, 2, id_usuario);
 kjvargas.find_users_by_id(id_usuario, p_users);
 
 END createusuario;
-
+/
 
 
 --Update usuario----------------------------------------------------------------------
@@ -98,7 +98,7 @@ BEGIN
         estado             = p_estado
     WHERE id_usuario = p_id_usuario;
 END updateusuario;
-
+/
 
 --Delete usuario----------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE kjvargas.deleteusuario(p_id_usuario IN NUMBER)
@@ -108,7 +108,7 @@ UPDATE kjvargas.usuario
 SET estado = NULL
 WHERE id_usuario = p_id_usuario;
 END deleteusuario;
-
+/
 
 
 --find all usuarios--------------------------------------------------------------------
@@ -128,7 +128,7 @@ FROM kjvargas.usuario U
 WHERE U.estado IS NOT NULL
 ORDER BY U.id_usuario DESC;
 END find_all_users;
-
+/
 
 ---Comprobar existencia del email-----------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE kjvargas.find_user_by_email(p_email IN VARCHAR2, p_users OUT SYS_REFCURSOR)
@@ -146,6 +146,7 @@ FROM kjvargas.usuario U
          INNER JOIN kjvargas.rol rol ON ur.id_rol = rol.id_rol
 WHERE U.email = p_email;
 END find_user_by_email;
+/
 
 --loadUser------------------------------------------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE kjvargas.find_user_by_email_load(p_email IN VARCHAR2, p_users OUT SYS_REFCURSOR)
@@ -160,7 +161,7 @@ FROM kjvargas.usuario U
          INNER JOIN kjvargas.rol rol ON ur.id_rol = rol.id_rol
 WHERE U.email = p_email;
 END find_user_by_email_load;
-
+/
 
 --habilitar usuario--------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE kjvargas.habilitar_usuario(p_id_user IN NUMBER)
@@ -168,7 +169,7 @@ AS
 BEGIN
 UPDATE kjvargas.usuario U SET U.estado = 'A' WHERE U.id_usuario = p_id_user;
 END habilitar_usuario;
-
+/
 
 
 --cambar rol usuario--------------------------------------------------------------------
@@ -176,7 +177,7 @@ create or replace procedure update_rol_user(p_id_rol in number,p_id_user in numb
 begin
 update KJVARGAS.USUARIO_ROL u set u.id_rol = p_id_rol where u.ID_USUARIO = p_id_user;
 end;
-
+/
 
 
 --find all rol--------------------------------------------------------------------
@@ -188,7 +189,7 @@ SELECT rol.id_rol, rol.nombre, rol.descripcion
 FROM kjvargas.rol rol
 WHERE rol.estado IS NOT NULL;
 END find_all_rol;
-
+/
 
 
 --findByUserUnassignedRoles------------------------------------------------------------
@@ -207,8 +208,7 @@ FROM (SELECT rol.id_rol
         AND ur.id_usuario = p_id_user) tx
          INNER JOIN kjvargas.rol R ON R.id_rol = tx.id_rol;
 END roles_no_asignado_user;
-
-
+/
 
 --findByUserAssignedRoles------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE kjvargas.find_all_rol_by_id(p_id_user IN NUMBER, p_rol OUT SYS_REFCURSOR)
@@ -221,3 +221,4 @@ FROM kjvargas.usuario_rol ur
 WHERE ur.estado IS NOT NULL
   AND ur.id_usuario = p_id_user;
 END find_all_rol_by_id;
+/
