@@ -11,7 +11,7 @@ import javax.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/roles")
+@RequestMapping("/roles")
 public class RolController {
 
     @Autowired
