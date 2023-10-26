@@ -2,7 +2,6 @@ package com.kjvargas.admusers.Entitys.Usuario;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kjvargas.admusers.Entitys.CamposObligatorios;
 
@@ -19,16 +18,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.UniqueConstraint;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Entity
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Entity
 @Table(name = "usuario", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class Usuario extends CamposObligatorios {
 

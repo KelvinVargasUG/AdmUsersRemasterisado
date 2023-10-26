@@ -3,13 +3,7 @@ package com.kjvargas.admusers.Entitys.Usuario;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kjvargas.admusers.Entitys.CamposObligatorios;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -17,9 +11,14 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Entity
+@NamedStoredProcedureQuery(
+        name = "Rol.findAll",
+        procedureName = "kjvargas.find_all_rol",
+        resultClasses = Rol.class
+)
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Entity
 @Table(name = "rol", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombre"})})
 public class Rol extends CamposObligatorios {
 

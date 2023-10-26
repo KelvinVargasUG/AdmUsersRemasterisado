@@ -3,7 +3,6 @@ package com.kjvargas.admusers.Services.Usuario;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
 import com.kjvargas.admusers.Repositories.UsuarioRepository;
 import com.kjvargas.admusers.Repositories.UsuarioRolRepository;
-import com.kjvargas.admusers.SecurityJwt.Entitys.UsuarioSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +52,7 @@ public class UsuarioService {
     }
 
     public List<Usuario> findAllUser() {
-        List<Usuario> usuarios = usuarioRepository.findAllUser();
+        List<Usuario> usuarios = this.usuarioRepository.findAllUser();
 
         if (usuarios.isEmpty()) {
             throw new RuntimeException("No hay usuarios");
