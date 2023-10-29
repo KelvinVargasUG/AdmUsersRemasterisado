@@ -27,7 +27,7 @@ public class UsuarioService {
     @Value("${user-password-admin}")
     private String passwordAdmin;
 
-    @PostConstruct
+    //@PostConstruct
     private void createUserAdmin() {
         usuarioRepository.createUserAdmin(emailAdmin, passwordAdmin);
     }

@@ -1,0 +1,9 @@
+FROM oracle/database/express:18.4.0-xe
+
+ENV ORACLE_PWD=12345
+
+EXPOSE 1521
+
+COPY user.sql /docker-entrypoint-initdb.d/
+
+CMD ["/bin/bash", "-c", "source /home/oracle/setPassword.sh"]

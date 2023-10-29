@@ -1,7 +1,6 @@
 FROM adoptopenjdk:11-jdk-hotspot
 MAINTAINER kelvinVargas
 
-# Agregar el usuario y grupo "spring"
 RUN groupadd -r spring && useradd -r -g spring spring
 
 USER spring:spring
