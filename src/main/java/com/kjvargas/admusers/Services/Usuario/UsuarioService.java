@@ -21,14 +21,7 @@ public class UsuarioService {
     @Autowired
     private UsuarioRolRepository usuarioRolRepository;
 
-    @Value("${user-email-admin}")
-    private String emailAdmin;
-
-    @Value("${user-password-admin}")
-    private String passwordAdmin;
-
-    //@PostConstruct
-    private void createUserAdmin() {
+    public void createUserAdmin(String emailAdmin, String passwordAdmin) {
         usuarioRepository.createUserAdmin(emailAdmin, passwordAdmin);
     }
 
