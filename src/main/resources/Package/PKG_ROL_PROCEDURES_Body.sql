@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY pkg_rol_procedures AS
+CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_rol_procedures AS
 	PROCEDURE find_all_rol (
 		p_rol OUT SYS_REFCURSOR
 	) IS

@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -31,13 +32,14 @@ public class PackageInitializer {
         this.packageFileNames = procedureFileScanner.scanPackageFiles();
     }
 
+
     @PostConstruct
     public void createPackages() {
-        for (String packageFileName : packageFileNames) {
+        for (String executeFileName : packageFileNames) {
             try {
-                String script = new String(Files.readAllBytes(Paths.get("src/main/resources/Package/" + packageFileName)));
+                String script = new String(Files.readAllBytes(Paths.get("src/main/resources/Package/" + executeFileName)));
                 jdbcTemplate.execute(script);
-                System.out.println("Creating package: " + packageFileName);
+                System.out.println("Creating package: " + executeFileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }

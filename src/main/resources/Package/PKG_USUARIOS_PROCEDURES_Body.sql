@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY pkg_usuarios_procedures AS
+CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
     PROCEDURE createadminuser (
         p_usuario VARCHAR2, p_password VARCHAR2
     ) AS
