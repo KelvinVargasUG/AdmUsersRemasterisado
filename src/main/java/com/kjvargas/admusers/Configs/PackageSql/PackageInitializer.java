@@ -1,10 +1,10 @@
-package com.kjvargas.admusers.Configs.Procedures;
+package com.kjvargas.admusers.Configs.PackageSql;
 
 import com.kjvargas.admusers.Services.Usuario.UsuarioService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -13,10 +13,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Component
-public class ProcedureInitializer {
+public class PackageInitializer {
     private final JdbcTemplate jdbcTemplate;
     private final UsuarioService usuarioService;
-    private final List<String> procedureFileNames;
+    private final List<String> packageFileNames;
 
     @Value("${user-email-admin}")
     private String emailAdmin;
@@ -25,19 +25,19 @@ public class ProcedureInitializer {
     private String passwordAdmin;
 
     @Autowired
-    public ProcedureInitializer(JdbcTemplate jdbcTemplate, UsuarioService usuarioService, ProcedureFileScanner procedureFileScanner) {
+    public PackageInitializer(JdbcTemplate jdbcTemplate, UsuarioService usuarioService, PackageFileScanner procedureFileScanner) {
         this.jdbcTemplate = jdbcTemplate;
         this.usuarioService = usuarioService;
-        this.procedureFileNames = procedureFileScanner.scanProcedureFiles();
+        this.packageFileNames = procedureFileScanner.scanPackageFiles();
     }
 
     @PostConstruct
-    public void createProcedures() {
-        for (String procedureFileName : procedureFileNames) {
+    public void createPackages() {
+        for (String packageFileName : packageFileNames) {
             try {
-                String script = new String(Files.readAllBytes(Paths.get("src/main/resources/Procedures/" + procedureFileName)));
+                String script = new String(Files.readAllBytes(Paths.get("src/main/resources/Package/" + packageFileName)));
                 jdbcTemplate.execute(script);
-                System.out.println("Creating procedure: " + procedureFileName);
+                System.out.println("Creating package: " + packageFileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }

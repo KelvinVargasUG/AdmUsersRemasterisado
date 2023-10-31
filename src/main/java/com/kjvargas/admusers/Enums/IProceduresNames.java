@@ -4,29 +4,35 @@ public interface IProceduresNames {
 
     static final String SCHEMA = "kjvargas.";
 
-    String FIND_ALL_USERS = SCHEMA+"find_all_users";
+    static final String PACKAGE_USUARIO = "PKG_USUARIOS_PROCEDURES.";
 
-    String CREATE_ADMIN_USER = SCHEMA+"createAdminUser";
+    static final String PACKAGE_ROL = "PKG_ROL_PROCEDURES.";
 
-    String DELETE_USUARIO = SCHEMA+"deleteUsuario";
+    String FIND_ALL_USERS = SCHEMA + PACKAGE_USUARIO + "find_all_users";
 
-    String HABILITAR_USUARIO = SCHEMA+"habilitar_usuario";
+    String CREATE_ADMIN_USER = SCHEMA + PACKAGE_USUARIO + "createAdminUser";
 
-    String CREATE_USUARIO = SCHEMA+"createUsuario";
+    String DELETE_USUARIO = SCHEMA + PACKAGE_USUARIO + "deleteUsuario";
 
-    String UPDATE_USUARIO = SCHEMA+"updateUsuario";
+    String HABILITAR_USUARIO = SCHEMA + PACKAGE_USUARIO + "habilitar_usuario";
 
-    String FIND_ALL_ROLES = SCHEMA+"find_all_rol";
+    String CREATE_USUARIO = SCHEMA + PACKAGE_USUARIO + "createUsuario";
 
-    String FIND_ALL_ROLES_NO_ASIGNADO_USER = SCHEMA+"roles_no_asignado_user";
+    String UPDATE_USUARIO = SCHEMA + PACKAGE_USUARIO + "updateUsuario";
 
-    String FIND_ALL_ROLES_BY_ID = SCHEMA+"find_all_rol_by_id";
+    String UPDATE_ROL_USER = SCHEMA + PACKAGE_USUARIO + "update_rol_user";
 
-    String FIND_USERS_BY_ID = SCHEMA+"find_users_by_id";
+    String FIND_USER_BY_EMAIL_LOAD = SCHEMA + PACKAGE_USUARIO + "find_user_by_email_load";
 
-    String UPDATE_ROL_USER = SCHEMA+"update_rol_user";
+    String FIND_USERS_BY_ID = SCHEMA + PACKAGE_USUARIO + "find_users_by_id";
 
-    String FIND_USER_BY_EMAIL = SCHEMA+"find_user_by_email";
+    String FIND_USER_BY_EMAIL = SCHEMA + PACKAGE_USUARIO + "find_user_by_email";
 
-    String FIND_USER_BY_EMAIL_LOAD = SCHEMA+"find_user_by_email_load";
+
+    String FIND_ALL_ROLES = SCHEMA + PACKAGE_ROL + "find_all_rol";
+
+    String FIND_ALL_ROLES_NO_ASIGNADO_USER = SCHEMA + PACKAGE_ROL + "roles_no_asignado_user";
+
+    String FIND_ALL_ROLES_BY_ID = SCHEMA + PACKAGE_ROL + "find_all_rol_by_id";
+
 }
