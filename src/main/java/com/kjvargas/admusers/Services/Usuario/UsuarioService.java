@@ -66,5 +66,4 @@ public class UsuarioService {
         this.usuarioRepository.deleteUser(id);
         return ResponseEntity.ok("Usuario eliminado");
     }
-
 }

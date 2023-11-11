@@ -1,12 +1,17 @@
 package com.kjvargas.admusers.Enums;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public interface IProceduresNames {
 
-    static final String SCHEMA = "kjvargas.";
+    @Value("${shema-name}")
+    String SCHEMA = "";
 
-    static final String PACKAGE_USUARIO = "PKG_USUARIOS_PROCEDURES.";
+    @Value("${package-name-usuarios}")
+    String PACKAGE_USUARIO = "";
 
-    static final String PACKAGE_ROL = "PKG_ROL_PROCEDURES.";
+    @Value("${package-name-rol}")
+    String PACKAGE_ROL = "";
 
     String FIND_ALL_USERS = SCHEMA + PACKAGE_USUARIO + "find_all_users";
 
