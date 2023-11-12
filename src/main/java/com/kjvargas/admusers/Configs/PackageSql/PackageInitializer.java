@@ -4,13 +4,13 @@ import com.kjvargas.admusers.Services.Usuario.UsuarioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -26,11 +26,14 @@ public class PackageInitializer {
     @Value("${user-password-admin}")
     private String passwordAdmin;
 
+    private final ResourceLoader resourceLoader;
+
     @Autowired
-    public PackageInitializer(JdbcTemplate jdbcTemplate, UsuarioService usuarioService, PackageFileScanner procedureFileScanner) {
+    public PackageInitializer(JdbcTemplate jdbcTemplate, UsuarioService usuarioService, PackageFileScanner procedureFileScanner, ResourceLoader resourceLoader) {
         this.jdbcTemplate = jdbcTemplate;
         this.usuarioService = usuarioService;
         this.packageFileNames = procedureFileScanner.scanPackageFiles();
+        this.resourceLoader = resourceLoader;
     }
 
     @PostConstruct
@@ -38,7 +41,8 @@ public class PackageInitializer {
         log.info("Inicio de creacion de package");
         for (String executeFileName : packageFileNames) {
             try {
-                String script = new String(Files.readAllBytes(Paths.get("src/main/resources/Package/" + executeFileName)));
+                Resource resource = resourceLoader.getResource("classpath:/Package/" + executeFileName);
+                String script = new String(resource.getInputStream().readAllBytes());
                 jdbcTemplate.execute(script);
                 log.info("Creando package: " + executeFileName);
             } catch (IOException e) {
