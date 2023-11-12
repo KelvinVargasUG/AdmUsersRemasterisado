@@ -10,7 +10,7 @@
 --GRANT CONNECT, RESOURCE TO kjvargas;
 
 --Create usuario Admin--------------------------------------------------------------------
-
+/*
 CREATE OR REPLACE PROCEDURE kjvargas.createadminuser(p_usuario varchar2, p_password VARCHAR2) AS
     v_id_rol kjvargas.rol.ID_ROL%TYPE;
     v_id_usuario kjvargas.usuario.ID_USUARIO%type;
@@ -223,3 +223,5 @@ WHERE ur.estado IS NOT NULL
   AND ur.id_usuario = p_id_user;
 END find_all_rol_by_id;
 /
+
+ */

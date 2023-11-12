@@ -1,7 +1,7 @@
 package com.kjvargas.admusers.Repositories;
 
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
-import com.kjvargas.admusers.Enums.IProceduresNames;
+import com.kjvargas.admusers.Enums.IProceduresNameRol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +19,7 @@ public class RolRepository {
 
     public List<Rol> findAllRoles() {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.FIND_ALL_ROLES)
+                .createStoredProcedureQuery(IProceduresNameRol.FIND_ALL_ROLES)
                 .registerStoredProcedureParameter(1, void.class, ParameterMode.REF_CURSOR);
 
         storedProcedure.execute();

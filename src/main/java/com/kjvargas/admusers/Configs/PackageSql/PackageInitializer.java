@@ -48,5 +48,6 @@ public class PackageInitializer {
         log.info("Fin de creacion de package");
         log.info("Creando usuario administrador");
         usuarioService.createUserAdmin(emailAdmin, passwordAdmin);
+        log.info("Usuario administrador creado");
     }
 }

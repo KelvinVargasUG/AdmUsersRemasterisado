@@ -2,7 +2,8 @@ package com.kjvargas.admusers.Repositories;
 
 import com.kjvargas.admusers.Entitys.Usuario.Rol;
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
-import com.kjvargas.admusers.Enums.IProceduresNames;
+import com.kjvargas.admusers.Enums.IProceduresNameRol;
+import com.kjvargas.admusers.Enums.IProceduresNameUsuario;
 import com.kjvargas.admusers.SecurityJwt.Entitys.UsuarioSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,7 +26,7 @@ public class UsuarioRolRepository {
             throw new RuntimeException("El usuario no existe");
         }
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.FIND_ALL_ROLES_NO_ASIGNADO_USER)
+                .createStoredProcedureQuery(IProceduresNameRol.FIND_ALL_ROLES_NO_ASIGNADO_USER)
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
         storedProcedure.setParameter(1, id);
@@ -45,7 +46,7 @@ public class UsuarioRolRepository {
 
     public List<Rol> findRolByUserId(Long id) {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.FIND_ALL_ROLES_BY_ID)
+                .createStoredProcedureQuery(IProceduresNameRol.FIND_ALL_ROLES_BY_ID)
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
         storedProcedure.setParameter(1, id);
@@ -68,7 +69,7 @@ public class UsuarioRolRepository {
 
     public Usuario findByIdUser(Long id) {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.FIND_USERS_BY_ID)
+                .createStoredProcedureQuery(IProceduresNameUsuario.FIND_USERS_BY_ID)
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
         storedProcedure.setParameter(1, id);
@@ -96,7 +97,7 @@ public class UsuarioRolRepository {
 
     public Usuario updateRolUser(Long id_rol, Long id_user) {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.UPDATE_ROL_USER)
+                .createStoredProcedureQuery(IProceduresNameUsuario.UPDATE_ROL_USER)
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, Long.class, ParameterMode.IN);
         storedProcedure.setParameter(1, id_rol);
@@ -110,7 +111,7 @@ public class UsuarioRolRepository {
 
     public Usuario findByIdEmail(String email) {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.FIND_USER_BY_EMAIL)
+                .createStoredProcedureQuery(IProceduresNameUsuario.FIND_USER_BY_EMAIL)
                 .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
         storedProcedure.setParameter(1, email);
@@ -138,7 +139,7 @@ public class UsuarioRolRepository {
             throw new RuntimeException("El email no puede ser nulo o vacio");
         }
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.FIND_USER_BY_EMAIL_LOAD)
+                .createStoredProcedureQuery(IProceduresNameUsuario.FIND_USER_BY_EMAIL_LOAD)
                 .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, void.class, ParameterMode.REF_CURSOR);
         storedProcedure.setParameter(1, email);

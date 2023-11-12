@@ -1,36 +1,36 @@
-CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
+CREATE OR REPLACE PACKAGE BODY pkg_usuarios_procedures AS
     PROCEDURE createadminuser (
         p_usuario VARCHAR2, p_password VARCHAR2
     ) AS
-        v_id_rol kjvargas.rol.id_rol%TYPE;
-        v_id_usuario kjvargas.usuario.id_usuario%TYPE;
+        v_id_rol rol.id_rol%TYPE;
+        v_id_usuario usuario.id_usuario%TYPE;
     BEGIN
         SELECT
             rol.id_rol
         INTO v_id_rol
         FROM
-            kjvargas.rol rol
+            rol rol
         WHERE
                 id_rol = 1;
         NULL;
     EXCEPTION
         WHEN no_data_found THEN
-            INSERT INTO kjvargas.rol (
+            INSERT INTO rol (
                 fecha_creacion, fecha_modificacion, nombre, descripcion
             ) VALUES (
                                  sysdate, sysdate, 'Rol_Admin', 'Rol de administrador puede crear e eliminar usuarios'
                      ) RETURNING id_rol INTO v_id_rol;
-            INSERT INTO kjvargas.rol (
+            INSERT INTO rol (
                 fecha_creacion, fecha_modificacion, nombre, descripcion
             ) VALUES (
                                  sysdate, sysdate, 'Rol_User', 'Rol de usuario con permisos limitados'
                      );
-            INSERT INTO kjvargas.usuario (
+            INSERT INTO usuario (
                 fecha_creacion, fecha_modificacion, email, nombre, apellido, password
             ) VALUES (
                                  sysdate, sysdate, p_usuario, 'admin', 'rol', p_password
                      ) RETURNING id_usuario INTO v_id_usuario;
-            INSERT INTO kjvargas.usuario_rol (
+            INSERT INTO usuario_rol (
                 fecha_creacion, fecha_modificacion, id_rol, id_usuario
             ) VALUES (
                                  sysdate, sysdate, v_id_rol, v_id_usuario
@@ -44,9 +44,9 @@ CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
         OPEN p_users FOR SELECT
                              u.id_usuario, u.nombre, u.apellido, u.email, u.estado, rol.nombre AS roles
                          FROM
-                             kjvargas.usuario u
-                                 INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
-                                 INNER JOIN kjvargas.rol         rol ON ur.id_rol = rol.id_rol
+                             usuario u
+                                 INNER JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario
+                                 INNER JOIN rol         rol ON ur.id_rol = rol.id_rol
                          WHERE
                              u.estado IS NOT NULL
                            AND u.id_usuario = p_id_user
@@ -57,26 +57,26 @@ CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
     PROCEDURE createusuario (
         p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_email IN VARCHAR2, p_password IN VARCHAR2, p_users OUT SYS_REFCURSOR
     ) AS
-        id_usuario kjvargas.usuario.id_usuario%TYPE;
+        id_usuario usuario.id_usuario%TYPE;
     BEGIN
-        INSERT INTO kjvargas.usuario (
+        INSERT INTO usuario (
             nombre, apellido, email, password, fecha_creacion, fecha_modificacion
         ) VALUES (
                      p_nombre, p_apellido, p_email, p_password, sysdate, sysdate
                  ) RETURNING id_usuario INTO id_usuario;
-        INSERT INTO kjvargas.usuario_rol (
+        INSERT INTO usuario_rol (
             fecha_creacion, fecha_modificacion, id_rol, id_usuario
         ) VALUES (
                              sysdate, sysdate, 2, id_usuario
                  );
-        kjvargas.find_users_by_id(id_usuario, p_users);
+        find_users_by_id(id_usuario, p_users);
     END createusuario;
 
     PROCEDURE updateusuario (
         p_id_usuario IN NUMBER, p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_email IN VARCHAR2, p_estado IN VARCHAR2
     ) AS
     BEGIN
-        UPDATE kjvargas.usuario
+        UPDATE usuario
         SET
             fecha_modificacion = sysdate, nombre = p_nombre, apellido = p_apellido, email = p_email, estado = p_estado
         WHERE
@@ -87,7 +87,7 @@ CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
         p_id_usuario IN NUMBER
     ) AS
     BEGIN
-        UPDATE kjvargas.usuario
+        UPDATE usuario
         SET
             estado = NULL
         WHERE
@@ -101,9 +101,9 @@ CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
         OPEN p_users FOR SELECT
                              u.id_usuario, u.nombre, u.apellido, u.email, u.estado, rol.nombre AS roles
                          FROM
-                             kjvargas.usuario u
-                                 INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
-                                 INNER JOIN kjvargas.rol         rol ON ur.id_rol = rol.id_rol
+                             usuario u
+                                 INNER JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario
+                                 INNER JOIN rol         rol ON ur.id_rol = rol.id_rol
                          WHERE
                              u.estado IS NOT NULL
                          ORDER BY
@@ -117,9 +117,9 @@ CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
         OPEN p_users FOR SELECT
                              u.id_usuario, u.nombre, u.apellido, u.email, u.estado, rol.nombre AS roles
                          FROM
-                             kjvargas.usuario u
-                                 INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
-                                 INNER JOIN kjvargas.rol         rol ON ur.id_rol = rol.id_rol
+                             usuario u
+                                 INNER JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario
+                                 INNER JOIN rol         rol ON ur.id_rol = rol.id_rol
                          WHERE
                                  u.email = p_email;
     END find_user_by_email;
@@ -131,9 +131,9 @@ CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
         OPEN p_users FOR SELECT
                              u.id_usuario, u.email, u.password
                          FROM
-                             kjvargas.usuario u
-                                 INNER JOIN kjvargas.usuario_rol ur ON u.id_usuario = ur.id_usuario
-                                 INNER JOIN kjvargas.rol         rol ON ur.id_rol = rol.id_rol
+                             usuario u
+                                 INNER JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario
+                                 INNER JOIN rol         rol ON ur.id_rol = rol.id_rol
                          WHERE
                                  u.email = p_email;
     END find_user_by_email_load;
@@ -141,7 +141,7 @@ CREATE OR REPLACE PACKAGE BODY kjvargas.pkg_usuarios_procedures AS
         p_id_user IN NUMBER
     ) AS
     BEGIN
-        UPDATE kjvargas.usuario u
+        UPDATE usuario u
         SET
             u.estado = 'A'
         WHERE

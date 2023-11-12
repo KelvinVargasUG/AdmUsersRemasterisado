@@ -1,7 +1,7 @@
 package com.kjvargas.admusers.Repositories;
 
 import com.kjvargas.admusers.Entitys.Usuario.Usuario;
-import com.kjvargas.admusers.Enums.IProceduresNames;
+import com.kjvargas.admusers.Enums.IProceduresNameUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -26,7 +26,7 @@ public class UsuarioRepository {
 
     public List<Usuario> findAllUser() {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.FIND_ALL_USERS)
+                .createStoredProcedureQuery(IProceduresNameUsuario.FIND_ALL_USERS)
                 .registerStoredProcedureParameter(1, void.class, ParameterMode.REF_CURSOR);
         storedProcedure.execute();
 
@@ -50,7 +50,7 @@ public class UsuarioRepository {
         String passwordEncrypt = this.bCryptPasswordEncoder.encode(passwordAdmin);
 
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.CREATE_ADMIN_USER)
+                .createStoredProcedureQuery(IProceduresNameUsuario.CREATE_ADMIN_USER)
                 .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
 
@@ -66,7 +66,7 @@ public class UsuarioRepository {
             throw new RuntimeException("El usuario no existe");
         }
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.DELETE_USUARIO)
+                .createStoredProcedureQuery(IProceduresNameUsuario.DELETE_USUARIO)
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
 
         storedProcedure.setParameter(1, id);
@@ -76,7 +76,7 @@ public class UsuarioRepository {
 
     public void habilitarUsuario(Long id_user) {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.HABILITAR_USUARIO)
+                .createStoredProcedureQuery(IProceduresNameUsuario.HABILITAR_USUARIO)
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
 
         storedProcedure.setParameter(1, id_user);
@@ -86,7 +86,7 @@ public class UsuarioRepository {
     public Usuario createUser(Usuario usuario) {
         String passwordEncrypt = this.bCryptPasswordEncoder.encode(usuario.getPassword());
 
-        StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery(IProceduresNames.CREATE_USUARIO)
+        StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery(IProceduresNameUsuario.CREATE_USUARIO)
                 .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
@@ -115,7 +115,7 @@ public class UsuarioRepository {
 
     public Usuario updateUser(Usuario usuario, Long id) {
         StoredProcedureQuery storedProcedure = entityManager
-                .createStoredProcedureQuery(IProceduresNames.UPDATE_USUARIO)
+                .createStoredProcedureQuery(IProceduresNameUsuario.UPDATE_USUARIO)
                 .registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
                 .registerStoredProcedureParameter(3, String.class, ParameterMode.IN)
