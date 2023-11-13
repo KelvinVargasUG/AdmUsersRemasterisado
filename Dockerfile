@@ -1,11 +1,14 @@
 FROM adoptopenjdk:11-jdk-hotspot
+
 MAINTAINER kelvinVargas
 
-RUN groupadd -r spring && useradd -r -g spring spring
+USER root
 
-USER spring:spring
+COPY wait-for-it.sh /wait-for-it.sh
+
+RUN chmod +x /wait-for-it.sh
 
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} AdmUsers.jar
 
-ENTRYPOINT ["java", "-jar", "/AdmUsers.jar"]
+ENTRYPOINT ["/bin/bash", "-c", "./wait-for-it.sh"]
