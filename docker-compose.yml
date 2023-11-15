@@ -5,9 +5,12 @@ services:
     image: 'gvenzl/oracle-xe:latest-faststart'
     container_name: db
     environment:
+      #- APP_USER=kjvargas_db
+      #- APP_USER_PASSWORD=12345
       - ORACLE_PASSWORD=12345
     ports:
       - 1521:1521
+
 
   app:
     image: 'adm-usuario:latest'
@@ -20,7 +23,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@db:1521/XE
       - SPRING_DATASOURCE_USERNAME=system
       - SPRING_DATASOURCE_PASSWORD=12345
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
       - SPRING_JPA_SHOW_SQL=true
     ports:
       - 8080:8080

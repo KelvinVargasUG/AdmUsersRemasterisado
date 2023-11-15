@@ -6,6 +6,8 @@ USER root
 
 COPY wait-for-it.sh /wait-for-it.sh
 
+RUN sed -i 's/\r$//' /wait-for-it.sh
+
 RUN chmod +x /wait-for-it.sh
 
 ARG JAR_FILE=target/*.jar

@@ -16,5 +16,6 @@ create or replace PACKAGE PKG_USUARIOS_PROCEDURES AS
      PROCEDURE find_user_by_email(p_email IN VARCHAR2, p_users OUT SYS_REFCURSOR);
      PROCEDURE find_user_by_email_load(p_email IN VARCHAR2, p_users OUT SYS_REFCURSOR);
      PROCEDURE habilitar_usuario(p_id_user IN NUMBER);
+     procedure update_rol_user(p_id_rol in number,p_id_user in number);
 END PKG_USUARIOS_PROCEDURES;
 
